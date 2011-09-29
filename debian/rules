@@ -1,0 +1,32 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+export DH_VERBOSE=1
+VERSION=$(shell grep PROFTPD_VERSION_TEXT /usr/include/proftpd/version.h|cut -d\" -f2)
+MODULE_NAME=mod_vroot
+DEBNAME=proftpd-mod-vroot
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	DESTDIR=$(CURDIR)/debian/$(DEBNAME) prxs -c $(MODULE_NAME).c
+	
+override_dh_auto_install:
+	DESTDIR=$(CURDIR)/debian/$(DEBNAME) prxs -i -c $(MODULE_NAME).c
+	rm -f $(CURDIR)/debian/$(DEBNAME)/usr/lib/proftpd/*.la \
+		  $(CURDIR)/debian/$(DEBNAME)/usr/lib/proftpd/*.a
+
+override_dh_gencontrol:
+	cat /usr/share/proftpd/proftpd-substvars >>$(CURDIR)/debian/$(DEBNAME).substvars
+	dh_gencontrol
+
+clean:
+	dh_clean
+	$(RM) $(MODULE_NAME).a *.o *.la *.lo
+	$(LIBTOOL) --mode=clean $(RM) "$(MODULE_NAME).o"
+	$(LIBTOOL) --mode=clean $(RM) `echo "$(MODULE_NAME).la" | sed 's/\.la$\/.lo/g'`
+	$(RM) -rf $(CURDIR)/debian/proftpd-mod-vroot $(CURDIR)/debian/*.log $(CURDIR)/debian/files $(CURDIR)/debian/$(DEBNAME).substvars
+
+distclean: clean
+	$(RM) -r .libs/ 
