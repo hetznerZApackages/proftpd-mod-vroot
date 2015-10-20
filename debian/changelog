@@ -1,3 +1,9 @@
+proftpd-mod-vroot (0.9.2-2+hetz1~exp1) jessie-hetz-experimental; urgency=low
+
+  * Import from sid upstream 
+
+ -- Shaun Bugler - Hetzner (Pty) Ltd <sb@hetzner.co.za>  Tue, 20 Oct 2015 16:09:11 +0200
+
 proftpd-mod-vroot (0.9.2-2) UNRELEASED; urgency=low
 
   * Fixed spelling-error-in-description lintian message 
