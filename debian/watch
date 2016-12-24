@@ -1,2 +1,3 @@
 version=3
-http://www.castaglia.org/proftpd/modules/proftpd-mod-vroot-([\d\.]+)\.tar\.gz
+opts=filenamemangle=s/.+\/v?(\d\S*)\.tar\.gz/proftpd-mod_vroot-$1\.tar\.gz/ \
+  https://github.com/Castaglia/proftpd-mod_vroot/tags .*/v?(\d\S*)\.tar\.gz

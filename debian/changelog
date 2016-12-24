@@ -1,4 +1,27 @@
-proftpd-mod-vroot (0.9.2-2) UNRELEASED; urgency=low
+proftpd-mod-vroot (0.9.4-1) unstable; urgency=medium
+
+  [ Mahyuddin Susanto ]
+  * Team upload.
+  * New Upstream release 0.9.3.
+    -> It has a fix for erroneous function vroot_lookup_path (Closes: #759936)
+  * Bump Standard Version to 3.9.5.
+  * d/changelog: fix previous release pocket, already uploaded but
+    still unreleased.
+  * d/watch: upstream moved to github (Closes: #732660)
+  * Rebuild against latest proftpd (Closes: #715569)
+
+  [Hilmar Preuße]
+  * d/control: Remove "DM-Upload-Allowed" field
+  * d/rules: add --without python-support to dh call
+  * d/rules: overhaul clean target to make it work
+
+  [ Francesco Paolo Lovergine ]
+  * New upstream release.
+  * Policy bumped to 3.9.8.
+
+ -- Francesco Paolo Lovergine <frankie@debian.org>  Sat, 24 Dec 2016 19:42:04 +0100
+
+proftpd-mod-vroot (0.9.2-2) unstable; urgency=low
 
   * Fixed spelling-error-in-description lintian message 
   * Update d/copyright to latest .174 DEP5 revision

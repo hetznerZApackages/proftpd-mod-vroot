@@ -7,7 +7,7 @@ MODULE_NAME=mod_vroot
 DEBNAME=proftpd-mod-vroot
 
 %:
-	dh $@
+	dh $@ --without python-support
 
 override_dh_auto_build:
 	DESTDIR=$(CURDIR)/debian/$(DEBNAME) prxs -c $(MODULE_NAME).c
@@ -21,12 +21,5 @@ override_dh_gencontrol:
 	cat /usr/share/proftpd/proftpd-substvars >>$(CURDIR)/debian/$(DEBNAME).substvars
 	dh_gencontrol
 
-clean:
-	dh_clean
-	$(RM) $(MODULE_NAME).a *.o *.la *.lo
-	$(LIBTOOL) --mode=clean $(RM) "$(MODULE_NAME).o"
-	$(LIBTOOL) --mode=clean $(RM) `echo "$(MODULE_NAME).la" | sed 's/\.la$\/.lo/g'`
-	$(RM) -rf $(CURDIR)/debian/proftpd-mod-vroot $(CURDIR)/debian/*.log $(CURDIR)/debian/files $(CURDIR)/debian/$(DEBNAME).substvars
-
-distclean: clean
-	$(RM) -r .libs/ 
+override_dh_auto_clean:
+	DESTDIR=$(CURDIR)/debian/$(DEBNAME) prxs -d $(MODULE_NAME).c
