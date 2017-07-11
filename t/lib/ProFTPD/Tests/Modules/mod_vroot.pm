@@ -29,6 +29,11 @@ my $TESTS = {
     test_class => [qw(forking)],
   },
 
+  vroot_anon_limit_write_allow_stor => {
+    order => ++$order,
+    test_class => [qw(forking)],
+  },
+
   vroot_symlink => {
     order => ++$order,
     test_class => [qw(forking)],
@@ -64,9 +69,19 @@ my $TESTS = {
     test_class => [qw(forking)],
   },
 
+  vroot_dir_mkd => {
+    order => ++$order,
+    test_class => [qw(forking)],
+  },
+
   vroot_server_root => {
     order => ++$order,
     test_class => [qw(forking rootprivs)],
+  },
+
+  vroot_server_root_mkd => {
+    order => ++$order,
+    test_class => [qw(bug forking rootprivs)],
   },
 
   vroot_alias_file_list => {
@@ -145,6 +160,11 @@ my $TESTS = {
   },
 
   vroot_alias_dir_cwd_list => {
+    order => ++$order,
+    test_class => [qw(forking)],
+  },
+
+  vroot_alias_dir_cwd_stor => {
     order => ++$order,
     test_class => [qw(forking)],
   },
@@ -229,79 +249,14 @@ my $TESTS = {
     test_class => [qw(forking mod_ifsession)],
   },
 
-  vroot_alias_ifclass => {
+  vroot_alias_ifgroup_list_stor => {
     order => ++$order,
     test_class => [qw(forking mod_ifsession)],
   },
 
-  vroot_alias_file_sftp_read => {
+  vroot_alias_ifclass => {
     order => ++$order,
-    test_class => [qw(forking mod_sftp sftp)],
-  },
-
-  vroot_alias_file_sftp_write_no_overwrite => {
-    order => ++$order,
-    test_class => [qw(forking mod_sftp sftp)],
-  },
-
-  vroot_alias_file_sftp_write => {
-    order => ++$order,
-    test_class => [qw(forking mod_sftp sftp)],
-  },
-
-  vroot_alias_file_sftp_stat => {
-    order => ++$order,
-    test_class => [qw(forking mod_sftp sftp)],
-  },
-
-  vroot_alias_file_sftp_lstat => {
-    order => ++$order,
-    test_class => [qw(forking mod_sftp sftp)],
-  },
-
-  vroot_alias_file_sftp_realpath => {
-    order => ++$order,
-    test_class => [qw(forking mod_sftp sftp)],
-  },
-
-  vroot_alias_file_sftp_remove => {
-    order => ++$order,
-    test_class => [qw(forking mod_sftp sftp)],
-  },
-
-  vroot_alias_dir_sftp_readdir => {
-    order => ++$order,
-    test_class => [qw(forking mod_sftp sftp)],
-  },
-
-  vroot_alias_dir_sftp_rmdir => {
-    order => ++$order,
-    test_class => [qw(forking mod_sftp sftp)],
-  },
-
-  vroot_alias_symlink_sftp_stat => {
-    order => ++$order,
-    test_class => [qw(forking mod_sftp sftp)],
-  },
-
-  vroot_alias_symlink_sftp_lstat => {
-    order => ++$order,
-    test_class => [qw(forking mod_sftp sftp)],
-  },
-
-  vroot_alias_symlink_sftp_realpath => {
-    order => ++$order,
-    test_class => [qw(forking mod_sftp sftp)],
-  },
-
-  vroot_alias_file_scp_download => {
-    order => ++$order,
-    test_class => [qw(forking mod_sftp scp)],
-  },
-
-  vroot_alias_file_scp_upload => {
-    order => ++$order,
-    test_class => [qw(forking mod_sftp scp)],
+    test_class => [qw(forking mod_ifsession)],
   },
 
   vroot_showsymlinks_on => {
@@ -314,10 +269,99 @@ my $TESTS = {
     test_class => [qw(bug forking)],
   },
 
+  vroot_mfmt => {
+    order => ++$order,
+    test_class => [qw(bug forking)],
+  },
+
+  vroot_log_extlog_retr => {
+    order => ++$order,
+    test_class => [qw(forking)],
+  },
+
+  vroot_log_extlog_stor => {
+    order => ++$order,
+    test_class => [qw(forking)],
+  },
+
+  # XXX Currently does not work, since TransferLog logging can't be filtered
+#  vroot_log_xferlog_retr => {
+#    order => ++$order,
+#    test_class => [qw(inprogress forking)],
+#  },
+
+  # XXX Currently does not work, since TransferLog logging can't be filtered
+#  vroot_log_xferlog_stor => {
+#    order => ++$order,
+#    test_class => [qw(inprogress forking)],
+#  },
+
+  # XXX Currently does not work due to <Directory> matching logic, and to
+  # mod_vroot's session.chroot_path machinations.
+#  vroot_config_limit_write => {
+#    order => ++$order,
+#    test_class => [qw(bug forking)],
+#  },
+
+  vroot_config_deleteabortedstores_conn_aborted => {
+    order => ++$order,
+    test_class => [qw(bug forking)],
+  },
+
+  vroot_config_deleteabortedstores_cmd_aborted => {
+    order => ++$order,
+    test_class => [qw(bug forking)],
+  },
+
+  vroot_alias_var_u_file => {
+    order => ++$order,
+    test_class => [qw(forking)],
+  },
+
+  vroot_alias_var_u_dir => {
+    order => ++$order,
+    test_class => [qw(forking)],
+  },
+
+  vroot_alias_var_u_dir_with_stor_mff => {
+    order => ++$order,
+    test_class => [qw(forking)],
+  },
+
+  vroot_alias_var_u_symlink_dir => {
+    order => ++$order,
+    test_class => [qw(forking)],
+  },
+
+  # See:
+  #  https://github.com/Castaglia/proftpd-mod_vroot/issues/4
+  vroot_alias_bad_src_dst_check_bug4 => {
+    order => ++$order,
+    test_class => [qw(bug forking)],
+  },
+
+  # See:
+  #  https://github.com/Castaglia/proftpd-mod_vroot/issues/5
+  vroot_alias_bad_alias_dirscan_bug5 => {
+    order => ++$order,
+    test_class => [qw(bug forking)],
+  },
+
+  # See:
+  #  https://github.com/proftpd/proftpd/issues/59
+  vroot_alias_enametoolong_bug59 => {
+    order => ++$order,
+    test_class => [qw(bug forking)],
+  },
+
 };
 
 sub new {
   return shift()->SUPER::new(@_);
+}
+
+sub tear_down {
+  rmtree('/tmp/vroot.d');
 }
 
 sub list_tests {
@@ -330,21 +374,6 @@ sub list_tests {
 #    alias but not traversal?
 }
 
-sub set_up {
-  my $self = shift;
-  $self->SUPER::set_up(@_);
-
-  # Make sure that mod_sftp does not complain about permissions on the hostkey
-  # files.
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  unless (chmod(0400, $rsa_host_key, $dsa_host_key)) {
-    die("Can't set perms on $rsa_host_key, $dsa_host_key: $!");
-  }
-}
-
 sub vroot_engine {
   my $self = shift;
   my $tmpdir = $self->{tmpdir};
@@ -353,13 +382,14 @@ sub vroot_engine {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -378,7 +408,7 @@ sub vroot_engine {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $config = {
     PidFile => $pid_file,
@@ -419,7 +449,6 @@ sub vroot_engine {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -443,7 +472,7 @@ sub vroot_engine {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -510,7 +539,7 @@ sub vroot_engine {
           $client->response_msg());
       }
 
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -575,7 +604,7 @@ sub vroot_engine {
           $client->response_msg());
       }
 
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -640,6 +669,9 @@ sub vroot_engine {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -654,7 +686,7 @@ sub vroot_anon {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
@@ -756,7 +788,7 @@ EOC
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -823,7 +855,7 @@ EOC
           $client->response_msg());
       }
 
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -888,7 +920,7 @@ EOC
           $client->response_msg());
       }
 
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -953,6 +985,188 @@ EOC
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_anon_limit_write_allow_stor {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my ($user, $group) = config_get_identity();
+  my $passwd = 'test';
+  my $anon_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = $<;
+  my $gid = $(;
+
+  my $uploads_dir = File::Spec->rel2abs("$anon_dir/uploads");
+  mkpath($uploads_dir);
+
+  my $test_file = File::Spec->rel2abs("$uploads_dir/test.txt");
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $anon_dir, $uploads_dir)) {
+      die("Can't set perms on $anon_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $anon_dir, $uploads_dir)) {
+      die("Can't set owner of $anon_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, '/tmp',
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  # Test this config:
+  #
+  #  <Anonymous>
+  #    <Limit WRITE SITE_CHMOD>
+  #      DenyAll
+  #    </Limit>
+  #
+  #    <Directory uploads/*>
+  #      <Limit STOR>
+  #        AllowAll
+  #      </Limit>
+  #    </Directory>
+  #  </Anonymous>
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  if (open(my $fh, ">> $config_file")) {
+    print $fh <<EOC;
+<Anonymous $anon_dir>
+  User $user
+  Group $group
+
+  RequireValidShell off
+
+  <Limit WRITE SITE_CHMOD>
+    DenyAll
+  </Limit>
+
+  # Ideally there would be no leading slash here, but because of how
+  # mod_vroot alters things (see Issue #1), the leading slash makes
+  # the test succeed.
+  <Directory /uploads/*>
+    <Limit STOR>
+      AllowAll
+    </Limit>
+  </Directory>
+
+</Anonymous>
+
+EOC
+    unless (close($fh)) {
+      die("Can't write $config_file: $!");
+    }
+
+  } else {
+    die("Can't open $config_file: $!");
+  }
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my $conn = $client->stor_raw('uploads/test.txt');
+      unless ($conn) {
+        die("STOR uploads/test.txt failed:" . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf = "Hello, World!\n";
+      $conn->write($buf, length($buf), 15);
+      eval { $conn->close() };
+
+      my $resp_code = $client->response_code();
+      my $resp_msg = $client->response_msg();
+
+      $self->assert_transfer_ok($resp_code, $resp_msg);
+
+      $client->quit();
+
+      $self->assert(-f $test_file,
+        test_msg("File $test_file does not exist as expected"));
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) {
+      warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -967,13 +1181,14 @@ sub vroot_symlink {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs("$tmpdir/home");
   my $uid = 500;
   my $gid = 500;
@@ -994,7 +1209,7 @@ sub vroot_symlink {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   # Create a symlink to a file that is outside of the vroot
   my $test_file = File::Spec->rel2abs("$tmpdir/bar.txt");
@@ -1027,7 +1242,7 @@ sub vroot_symlink {
     ScoreboardFile => $scoreboard_file,
     SystemLog => $log_file,
     TraceLog => $log_file,
-    Trace => 'fsio:10',
+    Trace => 'fsio:10 vroot:20',
 
     AuthUserFile => $auth_user_file,
     AuthGroupFile => $auth_group_file,
@@ -1062,8 +1277,9 @@ sub vroot_symlink {
   defined(my $pid = fork()) or die("Can't fork: $!");
   if ($pid) {
     eval {
-      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      sleep(1);
 
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
       $client->login($user, $passwd);
 
       my $conn = $client->list_raw();
@@ -1073,7 +1289,7 @@ sub vroot_symlink {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -1118,7 +1334,7 @@ sub vroot_symlink {
     $wfh->flush();
 
   } else {
-    eval { server_wait($config_file, $rfh) };
+    eval { server_wait($config_file, $rfh, 15) };
     if ($@) {
       warn($@);
       exit 1;
@@ -1133,6 +1349,9 @@ sub vroot_symlink {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -1147,13 +1366,14 @@ sub vroot_symlink_eloop {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs("$tmpdir/home");
   my $uid = 500;
   my $gid = 500;
@@ -1174,7 +1394,7 @@ sub vroot_symlink_eloop {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   # Create a symlink to a file that is outside of the vroot
   my $test_file = File::Spec->rel2abs("$tmpdir/test.txt");
@@ -1243,7 +1463,6 @@ sub vroot_symlink_eloop {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my $conn = $client->list_raw();
@@ -1253,7 +1472,7 @@ sub vroot_symlink_eloop {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -1316,6 +1535,9 @@ sub vroot_symlink_eloop {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -1330,13 +1552,14 @@ sub vroot_opt_allow_symlinks_file {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs("$tmpdir/home");
   my $uid = 500;
   my $gid = 500;
@@ -1357,7 +1580,7 @@ sub vroot_opt_allow_symlinks_file {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   # Create a symlink to a file that is outside of the vroot
   my $test_file = File::Spec->rel2abs("$tmpdir/bar.txt");
@@ -1428,7 +1651,6 @@ sub vroot_opt_allow_symlinks_file {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my $conn = $client->list_raw();
@@ -1438,7 +1660,7 @@ sub vroot_opt_allow_symlinks_file {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -1480,19 +1702,12 @@ sub vroot_opt_allow_symlinks_file {
           $client->response_msg());
       }
 
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       my $resp_code = $client->response_code();
       my $resp_msg = $client->response_msg();
-
-      $expected = 226;
-      $self->assert($expected == $resp_code,
-        test_msg("Expected $expected, got $resp_code"));
-
-      $expected = "Transfer complete";
-      $self->assert($expected eq $resp_msg,
-        test_msg("Expected '$expected', got '$resp_msg'"));
+      $self->assert_transfer_ok($resp_code, $resp_msg);
 
       $client->quit();
     };
@@ -1520,6 +1735,9 @@ sub vroot_opt_allow_symlinks_file {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -1534,13 +1752,14 @@ sub vroot_opt_allow_symlinks_dir_retr {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs("$tmpdir/home");
   my $uid = 500;
   my $gid = 500;
@@ -1564,7 +1783,7 @@ sub vroot_opt_allow_symlinks_dir_retr {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   # Create a symlink to a directory that is outside of the vroot
   my $test_file = File::Spec->rel2abs("$public_dir/test.txt");
@@ -1635,7 +1854,6 @@ sub vroot_opt_allow_symlinks_dir_retr {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my $conn = $client->list_raw();
@@ -1645,7 +1863,7 @@ sub vroot_opt_allow_symlinks_dir_retr {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -1687,19 +1905,12 @@ sub vroot_opt_allow_symlinks_dir_retr {
           $client->response_msg());
       }
 
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       my $resp_code = $client->response_code();
       my $resp_msg = $client->response_msg();
-
-      $expected = 226;
-      $self->assert($expected == $resp_code,
-        test_msg("Expected $expected, got $resp_code"));
-
-      $expected = "Transfer complete";
-      $self->assert($expected eq $resp_msg,
-        test_msg("Expected '$expected', got '$resp_msg'"));
+      $self->assert_transfer_ok($resp_code, $resp_msg);
 
       $client->quit();
     };
@@ -1727,6 +1938,9 @@ sub vroot_opt_allow_symlinks_dir_retr {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -1741,13 +1955,14 @@ sub vroot_opt_allow_symlinks_dir_stor_no_overwrite {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs("$tmpdir/home");
   my $uid = 500;
   my $gid = 500;
@@ -1771,7 +1986,7 @@ sub vroot_opt_allow_symlinks_dir_stor_no_overwrite {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   # Create a symlink to a directory that is outside of the vroot
   my $test_file = File::Spec->rel2abs("$public_dir/test.txt");
@@ -1842,7 +2057,6 @@ sub vroot_opt_allow_symlinks_dir_stor_no_overwrite {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my $conn = $client->list_raw();
@@ -1852,7 +2066,7 @@ sub vroot_opt_allow_symlinks_dir_stor_no_overwrite {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -1930,6 +2144,9 @@ sub vroot_opt_allow_symlinks_dir_stor_no_overwrite {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -1944,13 +2161,14 @@ sub vroot_opt_allow_symlinks_dir_stor {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs("$tmpdir/home");
   my $uid = 500;
   my $gid = 500;
@@ -1974,7 +2192,7 @@ sub vroot_opt_allow_symlinks_dir_stor {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   # Create a symlink to a directory that is outside of the vroot
   my $test_file = File::Spec->rel2abs("$public_dir/test.txt");
@@ -2046,7 +2264,6 @@ sub vroot_opt_allow_symlinks_dir_stor {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my $conn = $client->list_raw();
@@ -2056,7 +2273,7 @@ sub vroot_opt_allow_symlinks_dir_stor {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -2099,19 +2316,12 @@ sub vroot_opt_allow_symlinks_dir_stor {
       }
 
       my $buf = "Farewell cruel world!";
-      $conn->write($buf, length($buf), 30);
+      $conn->write($buf, length($buf), 25);
       eval { $conn->close() };
 
       my $resp_code = $client->response_code();
       my $resp_msg = $client->response_msg();
-
-      $expected = 226;
-      $self->assert($expected == $resp_code,
-        test_msg("Expected $expected, got $resp_code"));
-
-      $expected = "Transfer complete";
-      $self->assert($expected eq $resp_msg,
-        test_msg("Expected '$expected', got '$resp_msg'"));
+      $self->assert_transfer_ok($resp_code, $resp_msg);
 
       $client->quit();
     };
@@ -2139,6 +2349,9 @@ sub vroot_opt_allow_symlinks_dir_stor {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -2153,13 +2366,14 @@ sub vroot_opt_allow_symlinks_dir_cwd {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs("$tmpdir/home");
   my $uid = 500;
   my $gid = 500;
@@ -2183,7 +2397,7 @@ sub vroot_opt_allow_symlinks_dir_cwd {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   # Create a symlink to a directory that is outside of the vroot
   my $test_file = File::Spec->rel2abs("$public_dir/test.txt");
@@ -2254,7 +2468,6 @@ sub vroot_opt_allow_symlinks_dir_cwd {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my $conn = $client->list_raw();
@@ -2264,7 +2477,7 @@ sub vroot_opt_allow_symlinks_dir_cwd {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -2317,7 +2530,7 @@ sub vroot_opt_allow_symlinks_dir_cwd {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -2409,6 +2622,195 @@ sub vroot_opt_allow_symlinks_dir_cwd {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_dir_mkd {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $sub_dir = File::Spec->rel2abs("$tmpdir/foo.d");
+  mkpath($sub_dir);
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10 vroot:20',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    Directory => {
+      # BUG: This should be $sub_dir.  But due to how mod_vroot currently
+      # works, the <Directory> path has to be modified to match the
+      # mod_vroot.  (I.e. for the purposes of this test, just '/foo.d').
+      # Sigh.
+
+      # '/foo.d' => {
+      $sub_dir => {
+        # Test the UserOwner directive in the <Directory> setting
+        UserOwner => 'root',
+      },
+    },
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+        DefaultRoot => '~',
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+      $client->cwd('foo.d');
+      $client->mkd('bar.d');
+
+      my $resp_code = $client->response_code();
+      my $resp_msg = $client->response_msg();
+
+      my $expected;
+
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected response code $expected, got $resp_code"));
+
+      $expected = "\"/foo.d/bar.d\" - Directory successfully created";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected response message '$expected', got '$resp_msg'"));
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) { warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  eval {
+    if (open(my $fh, "< $log_file")) {
+      # Look for the 'smkdir' fsio channel trace message; it will tell us
+      # whether the UserOwner directive from the <Directory> section was
+      # successfully found.
+
+      my $have_smkdir_line = 0;
+      my $line;
+      while ($line = <$fh>) {
+        chomp($line);
+
+        if ($line =~ /smkdir/) {
+          $have_smkdir_line = 1;
+          last;
+        }
+      }
+
+      close($fh);
+
+      $self->assert($have_smkdir_line,
+        test_msg("Did not find expected 'fsio' channel TraceLog line in $log_file"));
+
+      if ($line =~ /UID (\d+)/) {
+        my $smkdir_uid = $1;
+
+        if ($< == 0) {
+          $self->assert($smkdir_uid == 0,
+            test_msg("Expected UID 0, got $smkdir_uid"));
+        }
+
+      } else {
+        die("Unexpectedly formatted 'fsio' channel TraceLog line '$line'");
+      }
+
+    } else {
+      die("Can't read $log_file: $!");
+    }
+  };
+  if ($@) {
+    $ex = $@;
+  }
+ 
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -2423,13 +2825,14 @@ sub vroot_server_root {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs("$tmpdir/home");
   my $uid = 500;
   my $gid = 500;
@@ -2452,7 +2855,7 @@ sub vroot_server_root {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $config = {
     PidFile => $pid_file,
@@ -2496,7 +2899,6 @@ sub vroot_server_root {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -2520,7 +2922,7 @@ sub vroot_server_root {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -2564,7 +2966,7 @@ sub vroot_server_root {
           $client->response_msg());
       }
 
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -2607,7 +3009,7 @@ sub vroot_server_root {
           $client->response_msg());
       }
 
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -2649,6 +3051,168 @@ sub vroot_server_root {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_server_root_mkd {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs("$tmpdir/home");
+  my $uid = 500;
+  my $gid = 500;
+
+  mkpath($home_dir);
+
+  my $abs_tmpdir = File::Spec->rel2abs($tmpdir);
+
+  my $test_dir = File::Spec->rel2abs("$home_dir/test.d");
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+        VRootServerRoot => $abs_tmpdir,
+        DefaultRoot => '~',
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my ($resp_code, $resp_msg) = $client->pwd();
+
+      my $expected;
+
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "\"/\" is the current directory";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      ($resp_code, $resp_msg) = $client->mkd('test.d');
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "\"/test.d\" - Directory successfully created";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      ($resp_code, $resp_msg) = $client->cwd('test.d');
+      $expected = 250;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = 'CWD command successful';
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      ($resp_code, $resp_msg) = $client->pwd();
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "\"/test.d\" is the current directory";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) { warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -2663,13 +3227,14 @@ sub vroot_alias_file_list {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -2688,7 +3253,7 @@ sub vroot_alias_file_list {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -2746,7 +3311,6 @@ sub vroot_alias_file_list {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -2770,7 +3334,7 @@ sub vroot_alias_file_list {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -2837,6 +3401,9 @@ sub vroot_alias_file_list {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -2851,13 +3418,14 @@ sub vroot_alias_file_list_multi {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -2876,7 +3444,7 @@ sub vroot_alias_file_list_multi {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -2937,7 +3505,6 @@ sub vroot_alias_file_list_multi {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -2961,7 +3528,7 @@ sub vroot_alias_file_list_multi {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -3029,6 +3596,9 @@ sub vroot_alias_file_list_multi {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -3043,13 +3613,14 @@ sub vroot_alias_file_retr {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -3068,9 +3639,12 @@ sub vroot_alias_file_retr {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
-  my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
+  my $test_dir = File::Spec->rel2abs("$tmpdir/test.d");
+  mkpath($test_dir);
+
+  my $src_file = File::Spec->rel2abs("$test_dir/foo.txt");
   if (open(my $fh, "> $src_file")) {
     print $fh "Hello, World!\n";
     unless (close($fh)) {
@@ -3088,7 +3662,7 @@ sub vroot_alias_file_retr {
     ScoreboardFile => $scoreboard_file,
     SystemLog => $log_file,
     TraceLog => $log_file,
-    Trace => 'fsio:10',
+    Trace => 'fsio:10 vroot:20',
 
     AuthUserFile => $auth_user_file,
     AuthGroupFile => $auth_group_file,
@@ -3136,25 +3710,16 @@ sub vroot_alias_file_retr {
       }
 
       my $buf;
-      my $count = $conn->read($buf, 8192, 30);
+      my $count = $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       my $resp_code = $client->response_code();
       my $resp_msg = $client->response_msg();
-
-      my $expected;
-
-      $expected = 226;
-      $self->assert($expected == $resp_code,
-        test_msg("Expected $expected, got $resp_code"));
-
-      $expected = 'Transfer complete';
-      $self->assert($expected eq $resp_msg,
-        test_msg("Expected '$expected', got '$resp_msg'"));
+      $self->assert_transfer_ok($resp_code, $resp_msg);
 
       $client->quit();
 
-      $expected = 14;
+      my $expected = 14;
       $self->assert($expected == $count,
         test_msg("Expected $expected, got $count"));
     };
@@ -3181,6 +3746,9 @@ sub vroot_alias_file_retr {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -3195,13 +3763,14 @@ sub vroot_alias_file_stor_no_overwrite {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -3220,7 +3789,7 @@ sub vroot_alias_file_stor_no_overwrite {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -3324,6 +3893,9 @@ sub vroot_alias_file_stor_no_overwrite {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -3338,13 +3910,14 @@ sub vroot_alias_file_stor {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -3363,7 +3936,7 @@ sub vroot_alias_file_stor {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -3433,21 +4006,12 @@ sub vroot_alias_file_stor {
       }
 
       my $buf = "Farewell, cruel world";
-      $conn->write($buf, length($buf), 30);
+      $conn->write($buf, length($buf), 25);
       eval { $conn->close() };
 
       my $resp_code = $client->response_code();
       my $resp_msg = $client->response_msg();
-
-      my $expected;
-
-      $expected = 226;
-      $self->assert($expected == $resp_code,
-        test_msg("Expected $expected, got $resp_code"));
-
-      $expected = 'Transfer complete';
-      $self->assert($expected eq $resp_msg,
-        test_msg("Expected '$expected', got '$resp_msg'"));
+      $self->assert_transfer_ok($resp_code, $resp_msg);
 
       $client->quit();
     };
@@ -3474,6 +4038,9 @@ sub vroot_alias_file_stor {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -3488,13 +4055,14 @@ sub vroot_alias_file_dele {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -3513,7 +4081,7 @@ sub vroot_alias_file_dele {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -3617,6 +4185,9 @@ sub vroot_alias_file_dele {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -3631,13 +4202,14 @@ sub vroot_alias_file_mlsd {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -3656,7 +4228,7 @@ sub vroot_alias_file_mlsd {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -3759,6 +4331,9 @@ sub vroot_alias_file_mlsd {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -3773,13 +4348,14 @@ sub vroot_alias_file_mlst {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -3798,7 +4374,7 @@ sub vroot_alias_file_mlst {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -3895,6 +4471,9 @@ sub vroot_alias_file_mlst {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -3909,13 +4488,14 @@ sub vroot_alias_dup_same_name {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -3934,7 +4514,7 @@ sub vroot_alias_dup_same_name {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -3992,7 +4572,6 @@ sub vroot_alias_dup_same_name {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -4016,7 +4595,7 @@ sub vroot_alias_dup_same_name {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -4082,6 +4661,9 @@ sub vroot_alias_dup_same_name {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -4096,13 +4678,14 @@ sub vroot_alias_dup_colliding_aliases {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -4121,7 +4704,7 @@ sub vroot_alias_dup_colliding_aliases {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -4180,7 +4763,6 @@ sub vroot_alias_dup_colliding_aliases {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -4204,7 +4786,7 @@ sub vroot_alias_dup_colliding_aliases {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -4271,6 +4853,9 @@ sub vroot_alias_dup_colliding_aliases {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -4285,13 +4870,14 @@ sub vroot_alias_delete_source {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -4310,7 +4896,7 @@ sub vroot_alias_delete_source {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -4368,7 +4954,6 @@ sub vroot_alias_delete_source {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -4405,7 +4990,7 @@ sub vroot_alias_delete_source {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -4470,6 +5055,9 @@ sub vroot_alias_delete_source {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -4484,13 +5072,14 @@ sub vroot_alias_no_source {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -4509,7 +5098,7 @@ sub vroot_alias_no_source {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   my $dst_file = '~/bar.txt';
@@ -4557,7 +5146,6 @@ sub vroot_alias_no_source {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -4581,7 +5169,7 @@ sub vroot_alias_no_source {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -4646,6 +5234,9 @@ sub vroot_alias_no_source {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -4660,13 +5251,14 @@ sub vroot_alias_dir_list_no_trailing_slash {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -4685,7 +5277,7 @@ sub vroot_alias_dir_list_no_trailing_slash {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
   mkpath($src_dir);
@@ -4735,7 +5327,6 @@ sub vroot_alias_dir_list_no_trailing_slash {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -4759,7 +5350,7 @@ sub vroot_alias_dir_list_no_trailing_slash {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -4826,6 +5417,9 @@ sub vroot_alias_dir_list_no_trailing_slash {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -4840,13 +5434,14 @@ sub vroot_alias_dir_list_with_trailing_slash {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -4865,7 +5460,7 @@ sub vroot_alias_dir_list_with_trailing_slash {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
   mkpath($src_dir);
@@ -4915,7 +5510,6 @@ sub vroot_alias_dir_list_with_trailing_slash {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -4939,7 +5533,7 @@ sub vroot_alias_dir_list_with_trailing_slash {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -5006,6 +5600,9 @@ sub vroot_alias_dir_list_with_trailing_slash {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -5020,13 +5617,14 @@ sub vroot_alias_dir_list_from_above {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -5045,7 +5643,7 @@ sub vroot_alias_dir_list_from_above {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
   mkpath($src_dir);
@@ -5119,7 +5717,6 @@ sub vroot_alias_dir_list_from_above {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -5142,7 +5739,7 @@ sub vroot_alias_dir_list_from_above {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -5204,6 +5801,9 @@ sub vroot_alias_dir_list_from_above {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -5218,13 +5818,14 @@ sub vroot_alias_dir_cwd_list {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -5243,7 +5844,7 @@ sub vroot_alias_dir_cwd_list {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
   mkpath($src_dir);
@@ -5317,7 +5918,6 @@ sub vroot_alias_dir_cwd_list {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -5360,7 +5960,7 @@ sub vroot_alias_dir_cwd_list {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -5422,13 +6022,16 @@ sub vroot_alias_dir_cwd_list {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
   unlink($log_file);
 }
 
-sub vroot_alias_dir_cwd_cdup {
+sub vroot_alias_dir_cwd_stor {
   my $self = shift;
   my $tmpdir = $self->{tmpdir};
 
@@ -5436,13 +6039,14 @@ sub vroot_alias_dir_cwd_cdup {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -5461,9 +6065,9 @@ sub vroot_alias_dir_cwd_cdup {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
-  my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
+  my $src_dir = File::Spec->rel2abs("$tmpdir/sub1.d/sub2.d/foo.d");
   mkpath($src_dir);
 
   my $dst_dir = '~/bar.d';
@@ -5473,7 +6077,7 @@ sub vroot_alias_dir_cwd_cdup {
     ScoreboardFile => $scoreboard_file,
     SystemLog => $log_file,
     TraceLog => $log_file,
-    Trace => 'fsio:10',
+    Trace => 'fsio:10 vroot:20',
 
     AuthUserFile => $auth_user_file,
     AuthGroupFile => $auth_group_file,
@@ -5511,7 +6115,173 @@ sub vroot_alias_dir_cwd_cdup {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
 
+      my ($resp_code, $resp_msg);
+      ($resp_code, $resp_msg) = $client->pwd();
+
+      my $expected;
+
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "\"/\" is the current directory";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      ($resp_code, $resp_msg) = $client->cwd('bar.d');
+
+      $expected = 250;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "CWD command successful";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      ($resp_code, $resp_msg) = $client->pwd();
+
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "\"/bar.d\" is the current directory";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      my $conn = $client->stor_raw('test.txt');
+      unless ($conn) {
+        die("Failed to STOR: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf = "Hello, World!";
+      $conn->write($buf, length($buf), 5);
+      eval { $conn->close() };
+
+      my $resp_code = $client->response_code();
+      my $resp_msg = $client->response_msg();
+      $self->assert_transfer_ok($resp_code, $resp_msg);
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) { warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_alias_dir_cwd_cdup {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
+  mkpath($src_dir);
+
+  my $dst_dir = '~/bar.d';
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10 vroot:20',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+        DefaultRoot => '~',
+
+        VRootAlias => "$src_dir $dst_dir",
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -5592,6 +6362,9 @@ sub vroot_alias_dir_cwd_cdup {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -5606,13 +6379,14 @@ sub vroot_alias_dir_mkd {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -5631,7 +6405,7 @@ sub vroot_alias_dir_mkd {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
   mkpath($src_dir);
@@ -5643,7 +6417,7 @@ sub vroot_alias_dir_mkd {
     ScoreboardFile => $scoreboard_file,
     SystemLog => $log_file,
     TraceLog => $log_file,
-    Trace => 'fsio:10',
+    Trace => 'fsio:10 vroot:20',
 
     AuthUserFile => $auth_user_file,
     AuthGroupFile => $auth_group_file,
@@ -5726,6 +6500,9 @@ sub vroot_alias_dir_mkd {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -5740,13 +6517,14 @@ sub vroot_alias_dir_rmd {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -5765,7 +6543,7 @@ sub vroot_alias_dir_rmd {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
   mkpath($src_dir);
@@ -5860,6 +6638,9 @@ sub vroot_alias_dir_rmd {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -5874,13 +6655,14 @@ sub vroot_alias_dir_cwd_mlsd {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -5899,7 +6681,7 @@ sub vroot_alias_dir_cwd_mlsd {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
   mkpath($src_dir);
@@ -5993,7 +6775,7 @@ sub vroot_alias_dir_cwd_mlsd {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -6057,6 +6839,9 @@ sub vroot_alias_dir_cwd_mlsd {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -6071,13 +6856,14 @@ sub vroot_alias_dir_mlsd_from_above {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -6096,7 +6882,7 @@ sub vroot_alias_dir_mlsd_from_above {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
   mkpath($src_dir);
@@ -6179,7 +6965,7 @@ sub vroot_alias_dir_mlsd_from_above {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -6243,6 +7029,9 @@ sub vroot_alias_dir_mlsd_from_above {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -6257,13 +7046,14 @@ sub vroot_alias_dir_outside_root_cwd_mlsd {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs("$tmpdir/baz");
   mkpath($home_dir);
   my $uid = 500;
@@ -6283,7 +7073,7 @@ sub vroot_alias_dir_outside_root_cwd_mlsd {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
   mkpath($src_dir);
@@ -6377,7 +7167,7 @@ sub vroot_alias_dir_outside_root_cwd_mlsd {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -6441,6 +7231,9 @@ sub vroot_alias_dir_outside_root_cwd_mlsd {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -6455,13 +7248,14 @@ sub vroot_alias_dir_outside_root_cwd_mlsd_cwd_ls {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs("$tmpdir/baz");
   mkpath($home_dir);
   my $uid = 500;
@@ -6481,7 +7275,7 @@ sub vroot_alias_dir_outside_root_cwd_mlsd_cwd_ls {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
   mkpath($src_dir);
@@ -6589,7 +7383,7 @@ sub vroot_alias_dir_outside_root_cwd_mlsd_cwd_ls {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -6646,7 +7440,7 @@ sub vroot_alias_dir_outside_root_cwd_mlsd_cwd_ls {
       }
 
       $buf = '';
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -6716,6 +7510,9 @@ sub vroot_alias_dir_outside_root_cwd_mlsd_cwd_ls {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -6730,13 +7527,14 @@ sub vroot_alias_dir_mlst {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -6755,7 +7553,7 @@ sub vroot_alias_dir_mlst {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
   mkpath($src_dir);
@@ -6844,6 +7642,9 @@ sub vroot_alias_dir_mlst {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -6858,13 +7659,14 @@ sub vroot_alias_symlink_list {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -6883,7 +7685,7 @@ sub vroot_alias_symlink_list {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -6957,7 +7759,6 @@ sub vroot_alias_symlink_list {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -6981,7 +7782,7 @@ sub vroot_alias_symlink_list {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -7049,6 +7850,9 @@ sub vroot_alias_symlink_list {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -7063,13 +7867,14 @@ sub vroot_alias_symlink_retr {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -7088,7 +7893,7 @@ sub vroot_alias_symlink_retr {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -7172,25 +7977,16 @@ sub vroot_alias_symlink_retr {
       }
 
       my $buf;
-      my $count = $conn->read($buf, 8192, 30);
+      my $count = $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       my $resp_code = $client->response_code();
       my $resp_msg = $client->response_msg();
-
-      my $expected;
-
-      $expected = 226;
-      $self->assert($expected == $resp_code,
-        test_msg("Expected $expected, got $resp_code"));
-
-      $expected = 'Transfer complete';
-      $self->assert($expected eq $resp_msg,
-        test_msg("Expected '$expected', got '$resp_msg'"));
+      $self->assert_transfer_ok($resp_code, $resp_msg);
 
       $client->quit();
 
-      $expected = 14;
+      my $expected = 14;
       $self->assert($expected == $count,
         test_msg("Expected $expected, got $count"));
     };
@@ -7217,6 +8013,9 @@ sub vroot_alias_symlink_retr {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -7231,13 +8030,14 @@ sub vroot_alias_symlink_stor_no_overwrite {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -7256,7 +8056,7 @@ sub vroot_alias_symlink_stor_no_overwrite {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -7376,6 +8176,9 @@ sub vroot_alias_symlink_stor_no_overwrite {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -7390,13 +8193,14 @@ sub vroot_alias_symlink_stor {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -7415,7 +8219,7 @@ sub vroot_alias_symlink_stor {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -7501,21 +8305,12 @@ sub vroot_alias_symlink_stor {
       }
 
       my $buf = "Farewell, cruel world";
-      $conn->write($buf, length($buf), 30);
+      $conn->write($buf, length($buf), 25);
       eval { $conn->close() };
 
       my $resp_code = $client->response_code();
       my $resp_msg = $client->response_msg();
-
-      my $expected;
-
-      $expected = 226;
-      $self->assert($expected == $resp_code,
-        test_msg("Expected $expected, got $resp_code"));
-
-      $expected = 'Transfer complete';
-      $self->assert($expected eq $resp_msg,
-        test_msg("Expected '$expected', got '$resp_msg'"));
+      $self->assert_transfer_ok($resp_code, $resp_msg);
 
       $client->quit();
     };
@@ -7542,6 +8337,9 @@ sub vroot_alias_symlink_stor {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -7556,13 +8354,14 @@ sub vroot_alias_symlink_mlsd {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -7581,7 +8380,7 @@ sub vroot_alias_symlink_mlsd {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -7700,6 +8499,9 @@ sub vroot_alias_symlink_mlsd {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -7714,13 +8516,14 @@ sub vroot_alias_symlink_mlst {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -7739,7 +8542,7 @@ sub vroot_alias_symlink_mlst {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -7852,6 +8655,9 @@ sub vroot_alias_symlink_mlst {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -7866,13 +8672,14 @@ sub vroot_alias_ifuser {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
 
   my $user = 'proftpd';
   my $passwd = 'test';
+  my $group = 'ftpd';
   my $home_dir = File::Spec->rel2abs($tmpdir);
   my $uid = 500;
   my $gid = 500;
@@ -7891,7 +8698,7 @@ sub vroot_alias_ifuser {
 
   auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
     '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
+  auth_group_write($auth_group_file, $group, $gid, $user);
 
   my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
   if (open(my $fh, "> $src_file")) {
@@ -7966,7 +8773,6 @@ EOC
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
@@ -7990,7 +8796,7 @@ EOC
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -8057,6 +8863,9 @@ EOC
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -8071,7 +8880,7 @@ sub vroot_alias_ifgroup {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
@@ -8142,11 +8951,11 @@ sub vroot_alias_ifgroup {
     print $fh <<EOC;
 <IfGroup $group>
   VRootAlias $src_file $dst_file1
-</IfUser>
+</IfGroup>
 
 <IfGroup !$group>
   VRootAlias $src_file $dst_file2
-</IfUser>
+</IfGroup>
 EOC
     unless (close($fh)) {
       die("Can't write $config_file: $!");
@@ -8172,11 +8981,9 @@ EOC
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
-
       ($resp_code, $resp_msg) = $client->pwd();
 
       my $expected;
@@ -8196,7 +9003,7 @@ EOC
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -8263,6 +9070,286 @@ EOC
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_alias_ifgroup_list_stor {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs("$tmpdir/home/$user");
+  mkpath($home_dir);
+  my $uid = 500;
+  my $gid = 500;
+
+  my $shared_dir = File::Spec->rel2abs("$tmpdir/shared");
+  mkpath($shared_dir);
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir, $shared_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir, $shared_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $test_file = File::Spec->rel2abs("$shared_dir/test.txt");
+  if (open(my $fh, "> $test_file")) {
+    print $fh "Hello, World!\n";
+    unless (close($fh)) {
+      die("Can't write $test_file: $!");
+    }
+
+  } else {
+    die("Can't open $test_file: $!");
+  }
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+        DefaultRoot => '~',
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  if (open(my $fh, ">> $config_file")) {
+    print $fh <<EOC;
+<IfGroup $group>
+  VRootAlias $shared_dir ~/shared
+</IfGroup>
+EOC
+    unless (close($fh)) {
+      die("Can't write $config_file: $!");
+    }
+
+  } else {
+    die("Can't open $config_file: $!");
+  }
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my ($resp_code, $resp_msg);
+      ($resp_code, $resp_msg) = $client->pwd();
+
+      my $expected;
+
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "\"/\" is the current directory";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      my $conn = $client->list_raw();
+      unless ($conn) {
+        die("Failed to LIST: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf;
+      $conn->read($buf, 8192, 5);
+      eval { $conn->close() };
+
+      $resp_code = $client->response_code();
+      $resp_msg = $client->response_msg();
+      $self->assert_transfer_ok($resp_code, $resp_msg);
+
+      # We have to be careful of the fact that readdir returns directory
+      # entries in an unordered fashion.
+      my $res = {};
+      my $lines = [split(/\n/, $buf)];
+      foreach my $line (@$lines) {
+        if ($line =~ /^\S+\s+\d+\s+\S+\s+\S+\s+.*?\s+(\S+)$/) {
+          $res->{$1} = 1;
+        }
+      }
+
+      unless (scalar(keys(%$res)) > 0) {
+        die("LIST data unexpectedly empty");
+      }
+
+      my $expected = {
+        'vroot.conf' => 1,
+        'vroot.group' => 1,
+        'vroot.passwd' => 1,
+        'vroot.pid' => 1,
+        'vroot.scoreboard' => 1,
+        'vroot.scoreboard.lck' => 1,
+        'shared' => 1,
+      };
+
+      my $ok = 1;
+      my $mismatch;
+      foreach my $name (keys(%$res)) {
+        unless (defined($expected->{$name})) {
+          $mismatch = $name;
+          $ok = 0;
+          last;
+        }
+      }
+
+      $self->assert($ok,
+        test_msg("Unexpected name '$mismatch' appeared in LIST data"));
+
+      ($resp_code, $resp_msg) = $client->cwd('shared');
+
+      $expected = 250;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = 'CWD command successful';
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      $conn = $client->list_raw('-al');
+      unless ($conn) {
+        die("Failed to LIST: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      $buf = '';
+      $conn->read($buf, 8192, 5);
+      eval { $conn->close() };
+
+      $resp_code = $client->response_code();
+      $resp_msg = $client->response_msg();
+      $self->assert_transfer_ok($resp_code, $resp_msg);
+
+      # We have to be careful of the fact that readdir returns directory
+      # entries in an unordered fashion.
+      $res = {};
+      $lines = [split(/\n/, $buf)];
+      foreach my $line (@$lines) {
+        if ($line =~ /^\S+\s+\d+\s+\S+\s+\S+\s+.*?\s+(\S+)$/) {
+          $res->{$1} = 1;
+        }
+      }
+
+      unless (scalar(keys(%$res)) > 0) {
+        die("LIST data unexpectedly empty");
+      }
+
+      $expected = {
+        '.' => 1,
+        '..' => 1,
+        'test.txt' => 1,
+      };
+
+      $ok = 1;
+      $mismatch = undef;
+      foreach my $name (keys(%$res)) {
+        unless (defined($expected->{$name})) {
+          $mismatch = $name;
+          $ok = 0;
+          last;
+        }
+      }
+
+      $self->assert($ok,
+        test_msg("Unexpected name '$mismatch' appeared in LIST data"));
+
+      $conn = $client->stor_raw('bar.txt');
+      unless ($conn) {
+        die("Failed to STOR bar.txt: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      $buf = "Farewell, cruel world!\n";
+      $conn->write($buf, length($buf), 5);
+      eval { $conn->close() };
+
+      $resp_code = $client->response_code();
+      $resp_msg = $client->response_msg();
+      $self->assert_transfer_ok($resp_code, $resp_msg);
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) { warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -8277,7 +9364,7 @@ sub vroot_alias_ifclass {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
@@ -8352,11 +9439,11 @@ sub vroot_alias_ifclass {
 
 <IfClass test>
   VRootAlias $src_file $dst_file1
-</IfUser>
+</IfClass>
 
 <IfClass !test>
   VRootAlias $src_file $dst_file2
-</IfUser>
+</IfClass>
 EOC
     unless (close($fh)) {
       die("Can't write $config_file: $!");
@@ -8382,11 +9469,9 @@ EOC
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my ($resp_code, $resp_msg);
-
       ($resp_code, $resp_msg) = $client->pwd();
 
       my $expected;
@@ -8406,7 +9491,7 @@ EOC
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -8473,2486 +9558,9 @@ EOC
   $self->assert_child_ok($pid);
 
   if ($ex) {
-    die($ex);
-  }
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
 
-  unlink($log_file);
-}
-
-sub vroot_alias_file_sftp_read {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
-  if (open(my $fh, "> $src_file")) {
-    print $fh "Hello, World!\n";
-    unless (close($fh)) {
-      die("Can't write $src_file: $!");
-    }
-
-  } else {
-    die("Can't open $src_file: $!");
-  }
-
-  my $dst_file = '~/bar.txt';
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_file $dst_file",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $sftp = $ssh2->sftp();
-      unless ($sftp) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't use SFTP on SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $fh = $sftp->open('bar.txt', O_RDONLY);
-      unless ($fh) {
-        my ($err_code, $err_name) = $sftp->error();
-        die("Can't open bar.txt: [$err_name] ($err_code)");
-      }
-
-      my $buf;
-      my $size = 0;
-
-      my $res = $fh->read($buf, 8192, 30);
-      while ($res) {
-        $size += $res;
-
-        $res = $fh->read($buf, 8192, 30);
-      }
-
-      # To issue the FXP_CLOSE, we have to explicit destroy the filehandle
-      $fh = undef;
-
-      my $expected = 14;
-      $self->assert($expected == $size,
-        test_msg("Expected $expected, got $size"));
-
-      $ssh2->disconnect();
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
-    die($ex);
-  }
-
-  unlink($log_file);
-}
-
-sub vroot_alias_file_sftp_write_no_overwrite {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
-  if (open(my $fh, "> $src_file")) {
-    print $fh "Hello, World!\n";
-    unless (close($fh)) {
-      die("Can't write $src_file: $!");
-    }
-
-  } else {
-    die("Can't open $src_file: $!");
-  }
-
-  my $dst_file = '~/bar.txt';
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_file $dst_file",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $sftp = $ssh2->sftp();
-      unless ($sftp) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't use SFTP on SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $fh = $sftp->open('bar.txt', O_WRONLY|O_TRUNC, 0644);
-      if ($fh) {
-        die("OPEN bar.txt succeeded unexpectedly");
-      }
-
-      my ($err_code, $err_name) = $sftp->error();
-
-      my $expected = 'SSH_FX_PERMISSION_DENIED';
-      $self->assert($expected eq $err_name,
-        test_msg("Expected '$expected', got '$err_name'"));
-
-      $ssh2->disconnect();
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
-    die($ex);
-  }
-
-  unlink($log_file);
-}
-
-sub vroot_alias_file_sftp_write {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
-  if (open(my $fh, "> $src_file")) {
-    print $fh "Hello, World!\n";
-    unless (close($fh)) {
-      die("Can't write $src_file: $!");
-    }
-
-  } else {
-    die("Can't open $src_file: $!");
-  }
-
-  my $dst_file = '~/bar.txt';
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-
-    AllowOverwrite => 'on',
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_file $dst_file",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $sftp = $ssh2->sftp();
-      unless ($sftp) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't use SFTP on SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $fh = $sftp->open('bar.txt', O_WRONLY|O_TRUNC, 0644);
-      unless ($fh) {
-        my ($err_code, $err_name) = $sftp->error();
-        die("Can't open bar.txt: [$err_name] ($err_code)");
-      }
-
-      my $count = 20;
-      for (my $i = 0; $i < $count; $i++) {
-        print $fh "ABCD" x 4096;
-      }
-
-      # To issue the FXP_CLOSE, we have to explicit destroy the filehandle
-      $fh = undef;
-
-      $ssh2->disconnect();
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
-    die($ex);
-  }
-
-  unlink($log_file);
-}
-
-sub vroot_alias_file_sftp_stat {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
-  if (open(my $fh, "> $src_file")) {
-    print $fh "Hello, World!\n";
-    unless (close($fh)) {
-      die("Can't write $src_file: $!");
-    }
-
-  } else {
-    die("Can't open $src_file: $!");
-  }
-
-  my $dst_file = '~/bar.txt';
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_file $dst_file",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $sftp = $ssh2->sftp();
-      unless ($sftp) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't use SFTP on SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $attrs = $sftp->stat('bar.txt', 1);
-      unless ($attrs) {
-        my ($err_code, $err_name) = $sftp->error();
-        die("FXP_STAT bar.txt failed: [$err_name] ($err_code)");
-      }
-
-      my $expected = 14;
-      my $file_size = $attrs->{size};
-      $self->assert($expected == $file_size,
-        test_msg("Expected $expected, got $file_size"));
-
-      $expected = $<;
-      my $file_uid = $attrs->{uid};
-      $self->assert($expected == $file_uid,
-        test_msg("Expected '$expected', got '$file_uid'"));
-
-      $expected = $(;
-      my $file_gid = $attrs->{gid};
-      $self->assert($expected == $file_gid,
-        test_msg("Expected '$expected', got '$file_gid'"));
-
-      $ssh2->disconnect();
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
-    die($ex);
-  }
-
-  unlink($log_file);
-}
-
-sub vroot_alias_file_sftp_lstat {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
-  if (open(my $fh, "> $src_file")) {
-    print $fh "Hello, World!\n";
-    unless (close($fh)) {
-      die("Can't write $src_file: $!");
-    }
-
-  } else {
-    die("Can't open $src_file: $!");
-  }
-
-  my $dst_file = '~/bar.txt';
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_file $dst_file",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $sftp = $ssh2->sftp();
-      unless ($sftp) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't use SFTP on SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $attrs = $sftp->stat('bar.txt', 0);
-      unless ($attrs) {
-        my ($err_code, $err_name) = $sftp->error();
-        die("FXP_STAT bar.txt failed: [$err_name] ($err_code)");
-      }
-
-      my $expected = 14;
-      my $file_size = $attrs->{size};
-      $self->assert($expected == $file_size,
-        test_msg("Expected $expected, got $file_size"));
-
-      $expected = $<;
-      my $file_uid = $attrs->{uid};
-      $self->assert($expected == $file_uid,
-        test_msg("Expected '$expected', got '$file_uid'"));
-
-      $expected = $(;
-      my $file_gid = $attrs->{gid};
-      $self->assert($expected == $file_gid,
-        test_msg("Expected '$expected', got '$file_gid'"));
-
-      $ssh2->disconnect();
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
-    die($ex);
-  }
-
-  unlink($log_file);
-}
-
-sub vroot_alias_file_sftp_realpath {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
-  if (open(my $fh, "> $src_file")) {
-    print $fh "Hello, World!\n";
-    unless (close($fh)) {
-      die("Can't write $src_file: $!");
-    }
-
-  } else {
-    die("Can't open $src_file: $!");
-  }
-
-  my $dst_file = '~/bar.txt';
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_file $dst_file",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $sftp = $ssh2->sftp();
-      unless ($sftp) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't use SFTP on SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $real_path = $sftp->realpath('bar.txt');
-      unless ($real_path) {
-        my ($err_code, $err_name) = $sftp->error();
-        die("Can't get real path for 'bar.txt': [$err_name] ($err_code)");
-      }
-
-      my $expected;
-
-      $expected = '/bar.txt';
-      $self->assert($expected eq $real_path,
-        test_msg("Expected '$expected', got '$real_path'"));
-
-      $ssh2->disconnect();
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
-    die($ex);
-  }
-
-  unlink($log_file);
-}
-
-sub vroot_alias_file_sftp_remove {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
-  if (open(my $fh, "> $src_file")) {
-    print $fh "Hello, World!\n";
-    unless (close($fh)) {
-      die("Can't write $src_file: $!");
-    }
-
-  } else {
-    die("Can't open $src_file: $!");
-  }
-
-  my $dst_file = '~/bar.txt';
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_file $dst_file",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $sftp = $ssh2->sftp();
-      unless ($sftp) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't use SFTP on SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $res = $sftp->unlink('bar.txt');
-      if ($res) {
-        die("REMOVE bar.txt succeeded unexpectedly");
-      }
-
-      my ($err_code, $err_name) = $sftp->error();
-
-      my $expected = 'SSH_FX_PERMISSION_DENIED';
-      $self->assert($expected eq $err_name,
-        test_msg("Expected '$expected', got '$err_name'"));
-
-      $ssh2->disconnect();
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
-    die($ex);
-  }
-
-  unlink($log_file);
-}
-
-sub vroot_alias_dir_sftp_readdir {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
-  mkpath($src_dir);
-
-  my $dst_dir = '~/bar.d';
-
-  my $test_file1 = File::Spec->rel2abs("$tmpdir/foo.d/a.txt");
-  if (open(my $fh, "> $test_file1")) {
-    close($fh);
-
-  } else {
-    die("Can't open $test_file1: $!");
-  }
-
-  my $test_file2 = File::Spec->rel2abs("$tmpdir/foo.d/b.txt");
-  if (open(my $fh, "> $test_file2")) {
-    close($fh);
-
-  } else {
-    die("Can't open $test_file2: $!");
-  }
-
-  my $test_file3 = File::Spec->rel2abs("$tmpdir/foo.d/c.txt");
-  if (open(my $fh, "> $test_file3")) {
-    close($fh);
-
-  } else {
-    die("Can't open $test_file3: $!");
-  }
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_dir $dst_dir",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $sftp = $ssh2->sftp();
-      unless ($sftp) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't use SFTP on SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $dir = $sftp->opendir('bar.d');
-      unless ($dir) {
-        my ($err_code, $err_name) = $sftp->error();
-        die("Can't open directory 'bar.d': [$err_name] ($err_code)");
-      }
-
-      my $res = {};
-
-      my $file = $dir->read();
-      while ($file) {
-        $res->{$file->{name}} = $file;
-        $file = $dir->read();
-      }
-
-      my $expected = {
-        '.' => 1,
-        '..' => 1,
-        'a.txt' => 1,
-        'b.txt' => 1,
-        'c.txt' => 1,
-      };
-
-      # To issue the FXP_CLOSE, we have to explicit destroy the dirhandle
-      $dir = undef;
-
-      $ssh2->disconnect();
-
-      my $ok = 1;
-      my $mismatch;
-
-      my $seen = [];
-      foreach my $name (keys(%$res)) {
-        push(@$seen, $name);
-
-        unless (defined($expected->{$name})) {
-          $mismatch = $name;
-          $ok = 0;
-          last;
-        }
-      }
-
-      unless ($ok) {
-        die("Unexpected name '$mismatch' appeared in READDIR data")
-      }
-
-      # Now remove from $expected all of the paths we saw; if there are
-      # any entries remaining in $expected, something went wrong.
-      foreach my $name (@$seen) {
-        delete($expected->{$name});
-      }
-
-      my $remaining = scalar(keys(%$expected));
-      $self->assert(0 == $remaining,
-        test_msg("Expected 0, got $remaining"));
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
-    die($ex);
-  }
-
-  unlink($log_file);
-}
-
-sub vroot_alias_dir_sftp_rmdir {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_dir = File::Spec->rel2abs("$tmpdir/foo.d");
-  mkpath($src_dir);
-
-  my $dst_dir = '~/bar.d';
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_dir $dst_dir",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $sftp = $ssh2->sftp();
-      unless ($sftp) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't use SFTP on SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $res = $sftp->rmdir('/bar.d');
-      if ($res) {
-        die("RMDIR bar.d succeeded unexpectedly");
-      }
-
-      my ($err_code, $err_name) = $sftp->error();
-
-      my $expected = 'SSH_FX_PERMISSION_DENIED';
-      $self->assert($expected eq $err_name,
-        test_msg("Expected '$expected', got '$err_name'"));
-
-      $ssh2->disconnect();
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
-    die($ex);
-  }
-
-  unlink($log_file);
-}
-
-sub vroot_alias_symlink_sftp_stat {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
-  if (open(my $fh, "> $src_file")) {
-    print $fh "Hello, World!\n";
-    unless (close($fh)) {
-      die("Can't write $src_file: $!");
-    }
-
-  } else {
-    die("Can't open $src_file: $!");
-  }
-
-  my $cwd = getcwd();
-
-  unless (chdir($home_dir)) {
-    die("Can't chdir to $home_dir: $!");
-  }
-
-  unless (symlink("./foo.txt", "foo.lnk")) {
-    die("Can't symlink './foo.txt' to 'foo.lnk': $!");
-  }
-
-  unless (chdir($cwd)) {
-    die("Can't chdir to $cwd: $!");
-  }
-
-  my $src_symlink = File::Spec->rel2abs("$tmpdir/foo.lnk");
-  my $dst_file = '~/bar.lnk';
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        VRootOptions => 'allowSymlinks',
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_symlink $dst_file",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $sftp = $ssh2->sftp();
-      unless ($sftp) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't use SFTP on SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $attrs = $sftp->stat('bar.lnk', 1);
-      unless ($attrs) {
-        my ($err_code, $err_name) = $sftp->error();
-        die("FXP_STAT bar.txt failed: [$err_name] ($err_code)");
-      }
-
-      my $expected = 14;
-      my $file_size = $attrs->{size};
-      $self->assert($expected == $file_size,
-        test_msg("Expected $expected, got $file_size"));
-
-      $expected = $<;
-      my $file_uid = $attrs->{uid};
-      $self->assert($expected == $file_uid,
-        test_msg("Expected '$expected', got '$file_uid'"));
-
-      $expected = $(;
-      my $file_gid = $attrs->{gid};
-      $self->assert($expected == $file_gid,
-        test_msg("Expected '$expected', got '$file_gid'"));
-
-      $ssh2->disconnect();
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
-    die($ex);
-  }
-
-  unlink($log_file);
-}
-
-sub vroot_alias_symlink_sftp_lstat {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
-  if (open(my $fh, "> $src_file")) {
-    print $fh "Hello, World!\n";
-    unless (close($fh)) {
-      die("Can't write $src_file: $!");
-    }
-
-  } else {
-    die("Can't open $src_file: $!");
-  }
-
-  my $cwd = getcwd();
-
-  unless (chdir($home_dir)) {
-    die("Can't chdir to $home_dir: $!");
-  }
-
-  unless (symlink("./foo.txt", "foo.lnk")) {
-    die("Can't symlink './foo.txt' to 'foo.lnk': $!");
-  }
-
-  unless (chdir($cwd)) {
-    die("Can't chdir to $cwd: $!");
-  }
-
-  my $src_symlink = File::Spec->rel2abs("$tmpdir/foo.lnk");
-  my $dst_file = '~/bar.lnk';
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        VRootOptions => 'allowSymlinks',
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_symlink $dst_file",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $sftp = $ssh2->sftp();
-      unless ($sftp) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't use SFTP on SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $attrs = $sftp->stat('bar.lnk', 0);
-      unless ($attrs) {
-        my ($err_code, $err_name) = $sftp->error();
-        die("FXP_STAT bar.txt failed: [$err_name] ($err_code)");
-      }
-
-      my $expected = 14;
-      my $file_size = $attrs->{size};
-      $self->assert($expected == $file_size,
-        test_msg("Expected $expected, got $file_size"));
-
-      $expected = $<;
-      my $file_uid = $attrs->{uid};
-      $self->assert($expected == $file_uid,
-        test_msg("Expected '$expected', got '$file_uid'"));
-
-      $expected = $(;
-      my $file_gid = $attrs->{gid};
-      $self->assert($expected == $file_gid,
-        test_msg("Expected '$expected', got '$file_gid'"));
-
-      $ssh2->disconnect();
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
-    die($ex);
-  }
-
-  unlink($log_file);
-}
-
-sub vroot_alias_symlink_sftp_realpath {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
-  if (open(my $fh, "> $src_file")) {
-    print $fh "Hello, World!\n";
-    unless (close($fh)) {
-      die("Can't write $src_file: $!");
-    }
-
-  } else {
-    die("Can't open $src_file: $!");
-  }
-
-  my $cwd = getcwd();
-
-  unless (chdir($home_dir)) {
-    die("Can't chdir to $home_dir: $!");
-  }
-
-  unless (symlink("./foo.txt", "foo.lnk")) {
-    die("Can't symlink './foo.txt' to 'foo.lnk': $!");
-  }
-
-  unless (chdir($cwd)) {
-    die("Can't chdir to $cwd: $!");
-  }
-
-  my $src_symlink = File::Spec->rel2abs("$tmpdir/foo.lnk");
-  my $dst_file = '~/bar.lnk';
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        VRootOptions => 'allowSymlinks',
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_symlink $dst_file",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $sftp = $ssh2->sftp();
-      unless ($sftp) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't use SFTP on SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $real_path = $sftp->realpath('bar.lnk');
-      unless ($real_path) {
-        my ($err_code, $err_name) = $sftp->error();
-        die("FXP_REALPATH bar.lnk failed: [$err_name] ($err_code)");
-      }
-
-      my $expected = '/bar.lnk';
-      $self->assert($expected eq $real_path,
-        test_msg("Expected '$expected', got '$real_path'"));
-
-      $ssh2->disconnect();
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
-    die($ex);
-  }
-
-  unlink($log_file);
-}
-
-sub vroot_alias_file_scp_download {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
-  if (open(my $fh, "> $src_file")) {
-    print $fh "Hello, World!\n";
-    unless (close($fh)) {
-      die("Can't write $src_file: $!");
-    }
-
-  } else {
-    die("Can't open $src_file: $!");
-  }
-
-  my $dst_file = '~/bar.txt';
-
-  my $test_file = File::Spec->rel2abs("tmpdir/test.txt");
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_file $dst_file",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $res = $ssh2->scp_get('/bar.txt', $test_file);
-      unless ($res) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't download bar.txt from server: [$err_name] ($err_code) $err_str");
-      }
-
-      $ssh2->disconnect();
-
-      unless (-f $test_file) {
-        die("$test_file file does not exist as expected");
-      }
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
-    die($ex);
-  }
-
-  unlink($log_file);
-}
-
-sub vroot_alias_file_scp_upload {
-  my $self = shift;
-  my $tmpdir = $self->{tmpdir};
-
-  my $config_file = "$tmpdir/vroot.conf";
-  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
-  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
-
-  my $log_file = File::Spec->rel2abs('tests.log');
-
-  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
-  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
-
-  my $user = 'proftpd';
-  my $passwd = 'test';
-  my $home_dir = File::Spec->rel2abs($tmpdir);
-  my $uid = 500;
-  my $gid = 500;
-
-  # Make sure that, if we're running as root, that the home directory has
-  # permissions/privs set for the account we create
-  if ($< == 0) {
-    unless (chmod(0755, $home_dir)) {
-      die("Can't set perms on $home_dir to 0755: $!");
-    }
-
-    unless (chown($uid, $gid, $home_dir)) {
-      die("Can't set owner of $home_dir to $uid/$gid: $!");
-    }
-  }
-
-  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
-    '/bin/bash');
-  auth_group_write($auth_group_file, 'ftpd', $gid, $user);
-
-  my $src_file = File::Spec->rel2abs("$tmpdir/foo.txt");
-  if (open(my $fh, "> $src_file")) {
-    print $fh "Hello, World!\n";
-    unless (close($fh)) {
-      die("Can't write $src_file: $!");
-    }
-
-  } else {
-    die("Can't open $src_file: $!");
-  }
-
-  my $dst_file = '~/bar.txt';
-
-  my $test_file = File::Spec->rel2abs("tmpdir/test.txt");
-
-  my $rsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_rsa_key");
-  my $dsa_host_key = File::Spec->rel2abs("$ENV{PROFTPD_TEST_DIR}/t/etc/modules/mod_sftp/ssh_host_dsa_key");
-
-  my $config = {
-    PidFile => $pid_file,
-    ScoreboardFile => $scoreboard_file,
-    SystemLog => $log_file,
-    TraceLog => $log_file,
-    Trace => 'fsio:10',
-
-    AuthUserFile => $auth_user_file,
-    AuthGroupFile => $auth_group_file,
-    AllowOverwrite => 'on',
-
-    IfModules => {
-      'mod_sftp.c' => [
-        "SFTPEngine on",
-        "SFTPLog $log_file",
-        "SFTPHostKey $rsa_host_key",
-        "SFTPHostKey $dsa_host_key",
-      ],
-
-      'mod_vroot.c' => {
-        VRootEngine => 'on',
-        VRootLog => $log_file,
-        DefaultRoot => '~',
-
-        VRootAlias => "$src_file $dst_file",
-      },
-
-      'mod_delay.c' => {
-        DelayEngine => 'off',
-      },
-    },
-  };
-
-  my ($port, $config_user, $config_group) = config_write($config_file, $config);
-
-  # Open pipes, for use between the parent and child processes.  Specifically,
-  # the child will indicate when it's done with its test by writing a message
-  # to the parent.
-  my ($rfh, $wfh);
-  unless (pipe($rfh, $wfh)) {
-    die("Can't open pipe: $!");
-  }
-
-  require Net::SSH2;
-
-  my $ex;
-
-  # Ignore SIGPIPE
-  local $SIG{PIPE} = sub { };
-
-  # Fork child
-  $self->handle_sigchld();
-  defined(my $pid = fork()) or die("Can't fork: $!");
-  if ($pid) {
-    eval {
-      my $ssh2 = Net::SSH2->new();
-
-      sleep(1);
-
-      unless ($ssh2->connect('127.0.0.1', $port)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't connect to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      unless ($ssh2->auth_password($user, $passwd)) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't login to SSH2 server: [$err_name] ($err_code) $err_str");
-      }
-
-      my $res = $ssh2->scp_put($config_file, '/bar.txt');
-      unless ($res) {
-        my ($err_code, $err_name, $err_str) = $ssh2->error();
-        die("Can't upload bar.txt to server: [$err_name] ($err_code) $err_str");
-      }
-
-      $ssh2->disconnect();
-    };
-
-    if ($@) {
-      $ex = $@;
-    }
-
-    $wfh->print("done\n");
-    $wfh->flush();
-
-  } else {
-    eval { server_wait($config_file, $rfh) };
-    if ($@) { warn($@);
-      exit 1;
-    }
-
-    exit 0;
-  }
-
-  # Stop server
-  server_stop($pid_file);
-
-  $self->assert_child_ok($pid);
-
-  if ($ex) {
     die($ex);
   }
 
@@ -10967,7 +9575,7 @@ sub vroot_showsymlinks_on {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
@@ -11098,7 +9706,6 @@ sub vroot_showsymlinks_on {
   if ($pid) {
     eval {
       my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
-
       $client->login($user, $passwd);
 
       my $conn = $client->list_raw();
@@ -11108,7 +9715,7 @@ sub vroot_showsymlinks_on {
       }
 
       my $buf;
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       # We have to be careful of the fact that readdir returns directory
@@ -11150,19 +9757,12 @@ sub vroot_showsymlinks_on {
           $client->response_msg());
       }
 
-      $conn->read($buf, 8192, 30);
+      $conn->read($buf, 8192, 5);
       eval { $conn->close() };
 
       my $resp_code = $client->response_code();
       my $resp_msg = $client->response_msg();
-
-      $expected = 226;
-      $self->assert($expected == $resp_code,
-        test_msg("Expected $expected, got $resp_code"));
-
-      $expected = "Transfer complete";
-      $self->assert($expected eq $resp_msg,
-        test_msg("Expected '$expected', got '$resp_msg'"));
+      $self->assert_transfer_ok($resp_code, $resp_msg);
 
       $client->quit();
     };
@@ -11190,6 +9790,9 @@ sub vroot_showsymlinks_on {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 
@@ -11204,7 +9807,7 @@ sub vroot_hiddenstores_on_double_dot {
   my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
   my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
 
-  my $log_file = File::Spec->rel2abs('tests.log');
+  my $log_file = test_get_logfile();
 
   my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
   my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
@@ -11286,19 +9889,12 @@ sub vroot_hiddenstores_on_double_dot {
       }
 
       my $buf = "Farewell, cruel world";
-      $conn->write($buf, length($buf), 30);
+      $conn->write($buf, length($buf), 25);
       eval { $conn->close() };
 
       my $resp_code = $client->response_code();
       my $resp_msg = $client->response_msg();
-
-      my $expected = 226;
-      $self->assert($expected == $resp_code,
-        test_msg("Expected $expected, got $resp_code"));
-
-      $expected = 'Transfer complete';
-      $self->assert($expected eq $resp_msg,
-        test_msg("Expected '$expected', got '$resp_msg'"));
+      $self->assert_transfer_ok($resp_code, $resp_msg);
 
       $client->quit();
     };
@@ -11325,6 +9921,2726 @@ sub vroot_hiddenstores_on_double_dot {
   $self->assert_child_ok($pid);
 
   if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_mfmt {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  my $test_file = File::Spec->rel2abs("$tmpdir/test.txt");
+  if (open(my $fh, "> $test_file")) {
+    print $fh "Hello, World!\n";
+    unless (close($fh)) {
+      die("Can't write $test_file: $!");
+    }
+
+  } else {
+    die("Can't open $test_file: $!");
+  }
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10 vroot:20',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+        DefaultRoot => '~',
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my ($resp_code, $resp_msg);
+
+      # First try MFMT using relative paths
+      my $path = './test.txt';
+      ($resp_code, $resp_msg) = $client->mfmt('20020717210715', $path);
+
+      my $expected;
+
+      $expected = 213;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "Modify=20020717210715; $path";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      $path = "test.txt";
+      ($resp_code, $resp_msg) = $client->mfmt('20020717210715', $path);
+
+      $expected = 213;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "Modify=20020717210715; $path";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      # Next try an absolute path (from client perspective)
+      $path = "/test.txt";
+      ($resp_code, $resp_msg) = $client->mfmt('20020717210715', $path);
+
+      $expected = 213;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "Modify=20020717210715; $path";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      # Last try the real absolute path
+      $path = $test_file;
+      eval { $client->mfmt('20020717210715', $path) };
+      unless ($@) {
+        die("MFMT $path succeeded unexpectedly");
+      }
+
+      $resp_code = $client->response_code();
+      $resp_msg = $client->response_msg();
+
+      $expected = 550;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "$path: No such file or directory";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) {
+      warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_log_extlog_retr {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $test_file = File::Spec->rel2abs("$tmpdir/test.txt");
+  if (open(my $fh, "> $test_file")) {
+    print $fh "Hello, World!\n";
+    unless (close($fh)) {
+      die("Can't write $test_file: $!");
+    }
+
+  } else {
+    die("Can't open $test_file: $!");
+  }
+
+  my $ext_log = File::Spec->rel2abs("$tmpdir/custom.log");
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    LogFormat => 'custom "%f"',
+    ExtendedLog => "$ext_log READ custom",
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+
+        DefaultRoot => '~',
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my $conn = $client->retr_raw('test.txt');
+      unless ($conn) {
+        die("Failed to RETR test.txt: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf;
+      $conn->read($buf, 8192, 5);
+      eval { $conn->close() };
+
+      my $resp_code = $client->response_code();
+      my $resp_msg = $client->response_msg();
+      $self->assert_transfer_ok($resp_code, $resp_msg);
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) {
+      warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  # Now, read in the ExtendedLog, and see whether the %f variable was
+  # properly written out.
+  if (open(my $fh, "< $ext_log")) {
+    my $line = <$fh>;
+    chomp($line);
+    close($fh);
+
+    if ($^O eq 'darwin') {
+      # MacOSX-specific hack, due to how it handles tmp files
+      $test_file = ('/private' . $test_file);
+    }
+
+    $self->assert($test_file eq $line,
+      test_msg("Expected '$test_file', got '$line'"));
+
+  } else {
+    die("Can't read $ext_log: $!");
+  }
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_log_extlog_stor {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $test_file = File::Spec->rel2abs("$tmpdir/test.txt");
+
+  my $ext_log = File::Spec->rel2abs("$tmpdir/custom.log");
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    LogFormat => 'custom "%f"',
+    ExtendedLog => "$ext_log WRITE custom",
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+
+        DefaultRoot => '~',
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my $conn = $client->stor_raw('test.txt');
+      unless ($conn) {
+        die("Failed to STOR test.txt: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf = "Hello, World!";
+      $conn->write($buf, length($buf), 5);
+      eval { $conn->close() };
+
+      my $resp_code = $client->response_code();
+      my $resp_msg = $client->response_msg();
+      $self->assert_transfer_ok($resp_code, $resp_msg);
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) {
+      warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  # Now, read in the ExtendedLog, and see whether the %f variable was
+  # properly written out.
+  if (open(my $fh, "< $ext_log")) {
+    my $line = <$fh>;
+    chomp($line);
+    close($fh);
+
+    if ($^O eq 'darwin') {
+      # MacOSX-specific hack, due to how it handles tmp files
+      $test_file = ('/private' . $test_file);
+    }
+
+    $self->assert($test_file eq $line,
+      test_msg("Expected '$test_file', got '$line'"));
+
+  } else {
+    die("Can't read $ext_log: $!");
+  }
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_log_xferlog_retr {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $test_file = File::Spec->rel2abs("$tmpdir/test.txt");
+  if (open(my $fh, "> $test_file")) {
+    print $fh "Hello, World!\n";
+    unless (close($fh)) {
+      die("Can't write $test_file: $!");
+    }
+
+  } else {
+    die("Can't open $test_file: $!");
+  }
+
+  my $xfer_log = File::Spec->rel2abs("$tmpdir/xfer.log");
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    TransferLog => $xfer_log,
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+
+        DefaultRoot => '~',
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+      $client->type('binary');
+
+      my $conn = $client->retr_raw('test.txt');
+      unless ($conn) {
+        die("Failed to RETR test.txt: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf;
+      $conn->read($buf, 8192, 5);
+      eval { $conn->close() };
+
+      my $resp_code = $client->response_code();
+      my $resp_msg = $client->response_msg();
+      $self->assert_transfer_ok($resp_code, $resp_msg);
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) {
+      warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if (open(my $fh, "< $xfer_log")) {
+    my $line = <$fh>;
+    chomp($line);
+    close($fh);
+
+    my $expected = '^\S+\s+\S+\s+\d+\s+\d+:\d+:\d+\s+\d+\s+\d+\s+(\S+)\s+(\d+)\s+(\S+)\s+(\S+)\s+_\s+o\s+r\s+(\S+)\s+ftp\s+0\s+\*\s+c$';
+
+    $self->assert(qr/$expected/, $line,
+      test_msg("Expected '$expected', got '$line'"));
+
+    if ($line =~ /$expected/) {
+      my $remote_host = $1;
+      my $filesz = $2;
+      my $filename = $3;
+      my $xfer_type = $4;
+      my $user_name = $5;
+
+      if ($^O eq 'darwin') {
+        # MacOSX-specific hack, due to how it handles tmp files
+        $test_file = ('/private' . $test_file);
+      }
+
+      $expected = '127.0.0.1';
+      $self->assert($expected eq $remote_host,
+        test_msg("Expected '$expected', got '$remote_host'"));
+
+      $expected = -s $test_file;
+      $self->assert($expected == $filesz,
+        test_msg("Expected '$expected', got '$filesz'"));
+
+      $expected = $test_file;
+      $self->assert($expected eq $filename,
+        test_msg("Expected '$expected', got '$filename'"));
+
+      $expected = 'b';
+      $self->assert($expected eq $xfer_type,
+        test_msg("Expected '$expected', got '$xfer_type'"));
+
+      $expected = $user;
+      $self->assert($expected eq $user_name,
+        test_msg("Expected '$expected', got '$user_name'"));
+    }
+
+  } else {
+    die("Can't read $xfer_log: $!");
+  }
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_log_xferlog_stor {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $test_file = File::Spec->rel2abs("$tmpdir/test.txt");
+
+  my $xfer_log = File::Spec->rel2abs("$tmpdir/xfer.log");
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    TransferLog => $xfer_log,
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+
+        DefaultRoot => '~',
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+      $client->type('binary');
+
+      my $conn = $client->stor_raw('test.txt');
+      unless ($conn) {
+        die("Failed to STOR test.txt: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf = "Hello, World!";
+      $conn->write($buf, length($buf), 5);
+      eval { $conn->close() };
+
+      my $resp_code = $client->response_code();
+      my $resp_msg = $client->response_msg();
+      $self->assert_transfer_ok($resp_code, $resp_msg);
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) {
+      warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if (open(my $fh, "< $xfer_log")) {
+    my $line = <$fh>;
+    chomp($line);
+    close($fh);
+
+    my $expected = '^\S+\s+\S+\s+\d+\s+\d+:\d+:\d+\s+\d+\s+\d+\s+(\S+)\s+(\d+)\s+(\S+)\s+(\S+)\s+_\s+i\s+r\s+(\S+)\s+ftp\s+0\s+\*\s+c$';
+
+    $self->assert(qr/$expected/, $line,
+      test_msg("Expected '$expected', got '$line'"));
+
+    if ($line =~ /$expected/) {
+      my $remote_host = $1;
+      my $filesz = $2;
+      my $filename = $3;
+      my $xfer_type = $4;
+      my $user_name = $5;
+
+      if ($^O eq 'darwin') {
+        # MacOSX-specific hack, due to how it handles tmp files
+        $test_file = ('/private' . $test_file);
+      }
+
+      $expected = '127.0.0.1';
+      $self->assert($expected eq $remote_host,
+        test_msg("Expected '$expected', got '$remote_host'"));
+
+      $expected = -s $test_file;
+      $self->assert($expected == $filesz,
+        test_msg("Expected '$expected', got '$filesz'"));
+
+      $expected = $test_file;
+      $self->assert($expected eq $filename,
+        test_msg("Expected '$expected', got '$filename'"));
+
+      $expected = 'b';
+      $self->assert($expected eq $xfer_type,
+        test_msg("Expected '$expected', got '$xfer_type'"));
+
+      $expected = $user;
+      $self->assert($expected eq $user_name,
+        test_msg("Expected '$expected', got '$user_name'"));
+    }
+
+  } else {
+    die("Can't read $xfer_log: $!");
+  }
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_config_limit_write {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'directory:20 fsio:10',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+
+        DefaultRoot => '~',
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  if (open(my $fh, ">> $config_file")) {
+    print $fh <<EOC;
+<Directory $home_dir>
+  <Limit WRITE>
+    DenyAll
+  </Limit>
+</Directory>
+EOC
+    unless (close($fh)) {
+      die("Can't write $config_file: $!");
+    }
+
+  } else {
+    die("Can't open $config_file: $!");
+  }
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my $conn = $client->stor_raw('test.txt');
+      if ($conn) {
+        eval { $conn->close() };
+        die("STOR test.txt succeeded unexpectedly");
+      }
+
+      my $resp_code = $client->response_code();
+      my $resp_msg = $client->response_msg();
+
+      my $expected;
+
+      $expected = 550;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "test.txt: Permission denied";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) {
+      warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_config_deleteabortedstores_conn_aborted {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $hidden_file = File::Spec->rel2abs("$tmpdir/.in.test.txt.");
+  my $test_file = File::Spec->rel2abs("$tmpdir/test.txt");
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10 vroot:20',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    HiddenStores => 'on',
+    DeleteAbortedStores => 'on',
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+
+        DefaultRoot => '~',
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my $conn = $client->stor_raw('test.txt');
+      unless ($conn) {
+        die("Failed to STOR test.txt: " . $client->response_code() . ' ' .
+          $client->response_msg());
+      }
+
+      my $buf = "Hello, World!";
+      $conn->write($buf, length($buf), 5);
+
+      unless (-f $hidden_file) {
+        die("File $hidden_file does not exist as expected");
+      }
+
+      eval { $conn->abort() };
+
+      my $resp_code = $client->response_code();
+      my $resp_msg = $client->response_msg();
+      $self->assert_transfer_ok($resp_code, $resp_msg, 1);
+
+      if (-f $test_file) {
+        die("File $test_file exists unexpectedly");
+      }
+
+      if (-f $hidden_file) {
+        die("File $hidden_file exists unexpectedly");
+      }
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) {
+      warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_config_deleteabortedstores_cmd_aborted {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $hidden_file = File::Spec->rel2abs("$tmpdir/.in.test.txt.");
+  my $test_file = File::Spec->rel2abs("$tmpdir/test.txt");
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10 vroot:20',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    HiddenStores => 'on',
+    DeleteAbortedStores => 'on',
+    TimeoutLinger => 1,
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+
+        DefaultRoot => '~',
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my $conn = $client->stor_raw('test.txt');
+      unless ($conn) {
+        die("Failed to STOR test.txt: " . $client->response_code() . ' ' .
+          $client->response_msg());
+      }
+
+      my $buf = "Hello, World!";
+      $conn->write($buf, length($buf), 5);
+
+      unless (-f $hidden_file) {
+        die("File $hidden_file does not exist as expected");
+      }
+
+      $client->quote('ABOR');
+
+      my $resp_code = $client->response_code();
+      my $resp_msg = $client->response_msg();
+      $self->assert_transfer_ok($resp_code, $resp_msg, 1);
+
+      eval { $conn->close() };
+      $client->quit();
+
+      if (-f $test_file) {
+        die("File $test_file exists unexpectedly");
+      }
+
+      if (-f $hidden_file) {
+        die("File $hidden_file exists unexpectedly");
+      }
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) {
+      warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_alias_var_u_file {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $sub_dir = File::Spec->rel2abs("$tmpdir/$user");
+  mkpath($sub_dir);
+
+  my $src_path = File::Spec->rel2abs("$sub_dir/foo.txt");
+  if (open(my $fh, "> $src_path")) {
+    print $fh "Hello, World!\n";
+    unless (close($fh)) {
+      die("Can't write $src_path: $!");
+    }
+
+  } else {
+    die("Can't open $src_path: $!");
+  }
+
+  my $src_file = File::Spec->rel2abs($tmpdir) . '/%u/foo.txt';
+  my $dst_file = '~/bar.txt';
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+        DefaultRoot => '~',
+
+        VRootAlias => "$src_file $dst_file",
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my ($resp_code, $resp_msg);
+
+      ($resp_code, $resp_msg) = $client->pwd();
+
+      my $expected;
+
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "\"/\" is the current directory";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      my $conn = $client->list_raw();
+      unless ($conn) {
+        die("Failed to LIST: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf;
+      $conn->read($buf, 8192, 5);
+      eval { $conn->close() };
+
+      # We have to be careful of the fact that readdir returns directory
+      # entries in an unordered fashion.
+      my $res = {};
+      my $lines = [split(/\n/, $buf)];
+      foreach my $line (@$lines) {
+        if ($line =~ /^(\S+)\s+\d+\s+\S+\s+\S+\s+.*?\s+(\S+)$/) {
+          $res->{$2} = $1;
+        }
+      }
+
+      unless (scalar(keys(%$res)) > 0) {
+        die("LIST data unexpectedly empty");
+      }
+
+      $expected = {
+        'vroot.conf' => 1,
+        'vroot.group' => 1,
+        'vroot.passwd' => 1,
+        'vroot.pid' => 1,
+        'vroot.scoreboard' => 1,
+        'vroot.scoreboard.lck' => 1,
+        'bar.txt' => 1,
+        'proftpd' => 1,
+      };
+
+      my $ok = 1;
+      my $mismatch;
+      foreach my $name (keys(%$res)) {
+        unless (defined($expected->{$name})) {
+          $mismatch = $name;
+          $ok = 0;
+          last;
+        }
+      }
+
+      unless ($ok) {
+        die("Unexpected name '$mismatch' appeared in LIST data")
+      }
+
+      my $mode = '-rw-r--r--';
+      $self->assert($mode eq $res->{'bar.txt'},
+        test_msg("Expected '$mode' for 'bar.txt', got '$res->{'bar.txt'}'"));
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) { warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_alias_var_u_dir {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $sub_dir = File::Spec->rel2abs("$tmpdir/$user");
+  mkpath($sub_dir);
+
+  my $src_path = File::Spec->rel2abs("$sub_dir/foo.d");
+  mkpath($src_path);
+
+  my $src_file = File::Spec->rel2abs($tmpdir) . '/%u/foo.d';
+  my $dst_file = '~/bar.d';
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+        DefaultRoot => '~',
+
+        VRootAlias => "$src_file $dst_file",
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my ($resp_code, $resp_msg);
+
+      ($resp_code, $resp_msg) = $client->pwd();
+
+      my $expected;
+
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "\"/\" is the current directory";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      my $conn = $client->list_raw();
+      unless ($conn) {
+        die("Failed to LIST: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf;
+      $conn->read($buf, 8192, 5);
+      eval { $conn->close() };
+
+      # We have to be careful of the fact that readdir returns directory
+      # entries in an unordered fashion.
+      my $res = {};
+      my $lines = [split(/\n/, $buf)];
+      foreach my $line (@$lines) {
+        if ($line =~ /^(\S+)\s+\d+\s+\S+\s+\S+\s+.*?\s+(\S+)$/) {
+          $res->{$2} = $1;
+        }
+      }
+
+      unless (scalar(keys(%$res)) > 0) {
+        die("LIST data unexpectedly empty");
+      }
+
+      $expected = {
+        'vroot.conf' => 1,
+        'vroot.group' => 1,
+        'vroot.passwd' => 1,
+        'vroot.pid' => 1,
+        'vroot.scoreboard' => 1,
+        'vroot.scoreboard.lck' => 1,
+        'bar.d' => 1,
+        'proftpd' => 1,
+      };
+
+      my $ok = 1;
+      my $mismatch;
+      foreach my $name (keys(%$res)) {
+        unless (defined($expected->{$name})) {
+          $mismatch = $name;
+          $ok = 0;
+          last;
+        }
+      }
+
+      unless ($ok) {
+        die("Unexpected name '$mismatch' appeared in LIST data")
+      }
+
+      my $mode = 'drwxr-xr-x';
+      $self->assert($mode eq $res->{'bar.d'},
+        test_msg("Expected '$mode' for 'bar.d', got '$res->{'bar.d'}'"));
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) { warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_alias_var_u_dir_with_stor_mff {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $sub_dir = File::Spec->rel2abs("$tmpdir/sub.d");
+  mkpath($sub_dir);
+
+  my $src_path = File::Spec->rel2abs("$sub_dir/foo.d");
+  mkpath($src_path);
+
+  my $src_file = File::Spec->rel2abs($tmpdir) . '/sub.d/foo.d/';
+  my $dst_file = '/%u';
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'DEFAULT:10 vroot:20 sql:10 fileperms:20',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+        DefaultRoot => '~',
+
+        VRootAlias => "$src_file $dst_file",
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my ($resp_code, $resp_msg) = $client->pwd();
+
+      my $expected;
+
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "\"/\" is the current directory";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      my $conn = $client->list_raw();
+      unless ($conn) {
+        die("Failed to LIST: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf;
+      $conn->read($buf, 8192, 5);
+      eval { $conn->close() };
+      sleep(1);
+
+      $resp_code = $client->response_code();
+      $resp_msg = $client->response_msg();
+      $self->assert_transfer_ok($resp_code, $resp_msg);
+
+      # We have to be careful of the fact that readdir returns directory
+      # entries in an unordered fashion.
+      my $res = {};
+      my $lines = [split(/\n/, $buf)];
+      foreach my $line (@$lines) {
+        if ($line =~ /^(\S+)\s+\d+\s+\S+\s+\S+\s+.*?\s+(\S+)$/) {
+          $res->{$2} = $1;
+        }
+      }
+
+      unless (scalar(keys(%$res)) > 0) {
+        die("LIST data unexpectedly empty");
+      }
+
+      $expected = {
+        'vroot.conf' => 1,
+        'vroot.group' => 1,
+        'vroot.passwd' => 1,
+        'vroot.pid' => 1,
+        'vroot.scoreboard' => 1,
+        'vroot.scoreboard.lck' => 1,
+        'sub.d' => 1,
+        'proftpd' => 1,
+      };
+
+      my $ok = 1;
+      my $mismatch;
+      foreach my $name (keys(%$res)) {
+        unless (defined($expected->{$name})) {
+          $mismatch = $name;
+          $ok = 0;
+          last;
+        }
+      }
+
+      unless ($ok) {
+        die("Unexpected name '$mismatch' appeared in LIST data")
+      }
+
+      my $mode = 'drwxr-xr-x';
+      $self->assert($mode eq $res->{'proftpd'},
+        test_msg("Expected '$mode' for 'proftpd', got '$res->{'proftpd'}'"));
+
+      # Now change into the aliased directory, and upload a file there
+      ($resp_code, $resp_msg) = $client->cwd('proftpd');
+      sleep(1);
+
+      my $file = 'test.txt';
+      $conn = $client->stor_raw($file);
+      unless ($conn) {
+        die("STOR $file failed: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      $buf = "Hello, World!\n";
+      $conn->write($buf, length($buf), 25);
+      eval { $conn->close() };
+      sleep(1);
+
+      $resp_code = $client->response_code();
+      $resp_msg = $client->response_msg();
+      $self->assert_transfer_ok($resp_code, $resp_msg);
+
+      my $facts = 'Modify=20020717210715;Create=20120807064710';
+      ($resp_code, $resp_msg) = $client->mff($facts, $file);
+
+      $expected = 213;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected response code $expected, got $resp_code"));
+
+      $expected = "$facts $file";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected response message '$expected', got '$resp_msg'"));
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh, 45) };
+    if ($@) { warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_alias_var_u_symlink_dir {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs($tmpdir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $sub_dir = File::Spec->rel2abs("$tmpdir/$user");
+  mkpath($sub_dir);
+
+  my $src_path = File::Spec->rel2abs("$sub_dir/foo.d");
+  mkpath($src_path);
+
+  my $cwd = getcwd();
+
+  unless (chdir($sub_dir)) {
+    die("Can't chdir to $sub_dir: $!");
+  }
+
+  unless (symlink('foo.d', "./foo.lnk")) {
+    die("Can't symlink 'foo.d' to './foo.lnk': $!");
+  }
+
+  unless (chdir($cwd)) {
+    die("Can't chdir to $cwd: $!");
+  }
+
+  my $src_file = File::Spec->rel2abs($tmpdir) . '/%u/foo.lnk';
+  my $dst_file = '/%u.lnk';
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:10 vroot:20',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+    ShowSymlinks => 'off',
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+        DefaultRoot => '~',
+
+        VRootAlias => "$src_file $dst_file",
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my ($resp_code, $resp_msg);
+
+      ($resp_code, $resp_msg) = $client->pwd();
+
+      my $expected;
+
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "\"/\" is the current directory";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      my $conn = $client->list_raw();
+      unless ($conn) {
+        die("Failed to LIST: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf;
+      $conn->read($buf, 8192, 5);
+      eval { $conn->close() };
+
+      # We have to be careful of the fact that readdir returns directory
+      # entries in an unordered fashion.
+      my $res = {};
+      my $lines = [split(/\n/, $buf)];
+      foreach my $line (@$lines) {
+        if ($line =~ /^(\S+)\s+\d+\s+\S+\s+\S+\s+.*?\s+(\S+)$/) {
+          $res->{$2} = $1;
+        }
+      }
+
+      unless (scalar(keys(%$res)) > 0) {
+        die("LIST data unexpectedly empty");
+      }
+
+      $expected = {
+        'vroot.conf' => 1,
+        'vroot.group' => 1,
+        'vroot.passwd' => 1,
+        'vroot.pid' => 1,
+        'vroot.scoreboard' => 1,
+        'vroot.scoreboard.lck' => 1,
+        'proftpd.lnk' => 1,
+        'proftpd' => 1,
+      };
+
+      my $ok = 1;
+      my $mismatch;
+      foreach my $name (keys(%$res)) {
+        unless (defined($expected->{$name})) {
+          $mismatch = $name;
+          $ok = 0;
+          last;
+        }
+      }
+
+      unless ($ok) {
+        die("Unexpected name '$mismatch' appeared in LIST data")
+      }
+
+      my $mode = 'drwxr-xr-x';
+      $self->assert($mode eq $res->{'proftpd.lnk'},
+        test_msg("Expected '$mode' for 'proftpd.lnk', got '$res->{'proftpd.lnk'}'"));
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) { warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_alias_bad_src_dst_check_bug4 {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs("$tmpdir/$user");
+  mkpath($home_dir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # In order for the real /tmp/vroot.d directory to be visible, via
+  # VRootAlias, within the vroot, the leading /tmp directory needs to
+  # actually exist with the vroot.  In other words, the path needs to be
+  # real, even if the leaf is virtual.
+  my $user_tmpdir = File::Spec->rel2abs("$home_dir/tmp");
+  mkpath($user_tmpdir);
+
+  my $test_dir = File::Spec->rel2abs("/tmp/vroot.d");
+  mkpath($test_dir);
+
+  my $test_file = File::Spec->rel2abs("$test_dir/test.txt");
+  if (open(my $fh, "> $test_file")) {
+    close($fh);
+
+  } else {
+    die("Can't open $test_file: $!");
+  }
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir, $user_tmpdir, $test_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir, $user_tmpdir, $test_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:20 vroot:20',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+    ShowSymlinks => 'off',
+
+    IfModules => {
+      'mod_vroot.c' => {
+        VRootEngine => 'on',
+        VRootLog => $log_file,
+        DefaultRoot => '~',
+
+        VRootAlias => "$test_dir ~/tmp/vroot.d",
+      },
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my ($resp_code, $resp_msg) = $client->pwd();
+
+      my $expected;
+
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "\"/\" is the current directory";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      $client->cwd('/tmp/vroot.d');
+
+      my $conn = $client->list_raw();
+      unless ($conn) {
+        die("Failed to LIST: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf;
+      $conn->read($buf, 8192, 5);
+      eval { $conn->close() };
+
+      # We have to be careful of the fact that readdir returns directory
+      # entries in an unordered fashion.
+      my $res = {};
+      my $lines = [split(/\n/, $buf)];
+      foreach my $line (@$lines) {
+        if ($line =~ /^(\S+)\s+\d+\s+\S+\s+\S+\s+.*?\s+(\S+)$/) {
+          $res->{$2} = $1;
+        }
+      }
+
+      unless (scalar(keys(%$res)) > 0) {
+        die("LIST data unexpectedly empty");
+      }
+
+      $expected = {
+        'test.txt' => 1,
+      };
+
+      my $ok = 1;
+      my $mismatch;
+      foreach my $name (keys(%$res)) {
+        unless (defined($expected->{$name})) {
+          $mismatch = $name;
+          $ok = 0;
+          last;
+        }
+      }
+
+      unless ($ok) {
+        die("Unexpected name '$mismatch' appeared in LIST data")
+      }
+
+      my $mode = '-rw-r--r--';
+      $self->assert($mode eq $res->{'test.txt'},
+        test_msg("Expected '$mode' for 'test.txt', got '$res->{'test.txt'}'"));
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) { warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_alias_bad_alias_dirscan_bug5 {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs("$tmpdir/$user");
+  mkpath($home_dir);
+  my $uid = 500;
+  my $gid = 500;
+
+  # In order for the real /tmp/vroot.d directory to be visible, via
+  # VRootAlias, within the vroot, the leading /tmp directory needs to
+  # actually exist with the vroot.  In other words, the path needs to be
+  # real, even if the leaf is virtual.
+  my $user_tmpdir = File::Spec->rel2abs("$home_dir/tmp");
+  mkpath($user_tmpdir);
+
+  my $test_dir = File::Spec->rel2abs("/tmp/vroot.d");
+  mkpath($test_dir);
+
+  my $test_file = File::Spec->rel2abs("$test_dir/test.txt");
+  if (open(my $fh, "> $test_file")) {
+    close($fh);
+
+  } else {
+    die("Can't open $test_file: $!");
+  }
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir, $user_tmpdir, $test_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir, $user_tmpdir, $test_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:20 vroot:20',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+    ShowSymlinks => 'off',
+
+    IfModules => {
+      'mod_vroot.c' => [
+        'VRootEngine on',
+        "VRootLog $log_file",
+        'DefaultRoot ~',
+        "VRootAlias $test_dir ~/vroot.d",
+        "VRootAlias $test_dir ~/tmp/vroot.d",
+      ],
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my ($resp_code, $resp_msg) = $client->pwd();
+
+      my $expected;
+
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "\"/\" is the current directory";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      $client->cwd('/tmp');
+
+      my $conn = $client->list_raw();
+      unless ($conn) {
+        die("Failed to LIST: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf;
+      $conn->read($buf, 8192, 5);
+      eval { $conn->close() };
+
+      # We have to be careful of the fact that readdir returns directory
+      # entries in an unordered fashion.
+      my $res = {};
+      my $lines = [split(/\n/, $buf)];
+      foreach my $line (@$lines) {
+        if ($line =~ /^(\S+)\s+\d+\s+\S+\s+\S+\s+.*?\s+(\S+)$/) {
+          $res->{$2} = $1;
+        }
+      }
+
+      unless (scalar(keys(%$res)) > 0) {
+        die("LIST data unexpectedly empty");
+      }
+
+      $expected = {
+        'vroot.d' => 1,
+      };
+
+      my $ok = 1;
+      my $mismatch;
+      foreach my $name (keys(%$res)) {
+        unless (defined($expected->{$name})) {
+          $mismatch = $name;
+          $ok = 0;
+          last;
+        }
+      }
+
+      unless ($ok) {
+        die("Unexpected name '$mismatch' appeared in LIST data")
+      }
+
+      my $mode = 'drwxr-xr-x';
+      $self->assert($mode eq $res->{'vroot.d'},
+        test_msg("Expected '$mode' for 'vroot.d', got '$res->{'vroot.d'}'"));
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) { warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
+    die($ex);
+  }
+
+  unlink($log_file);
+}
+
+sub vroot_alias_enametoolong_bug59 {
+  my $self = shift;
+  my $tmpdir = $self->{tmpdir};
+
+  my $config_file = "$tmpdir/vroot.conf";
+  my $pid_file = File::Spec->rel2abs("$tmpdir/vroot.pid");
+  my $scoreboard_file = File::Spec->rel2abs("$tmpdir/vroot.scoreboard");
+
+  my $log_file = test_get_logfile();
+
+  my $auth_user_file = File::Spec->rel2abs("$tmpdir/vroot.passwd");
+  my $auth_group_file = File::Spec->rel2abs("$tmpdir/vroot.group");
+
+  my $user = 'proftpd';
+  my $passwd = 'test';
+  my $group = 'ftpd';
+  my $home_dir = File::Spec->rel2abs("$tmpdir/$user");
+  mkpath($home_dir);
+  my $uid = 500;
+  my $gid = 500;
+
+  my $test_dir = File::Spec->rel2abs("/tmp/vroot.d/0001a/10001a/encoding/input");
+  mkpath($test_dir);
+
+  my $test_file = File::Spec->rel2abs("$test_dir/asgard");
+  if (open(my $fh, "> $test_file")) {
+    close($fh);
+
+  } else {
+    die("Can't open $test_file: $!");
+  }
+
+  # Make sure that, if we're running as root, that the home directory has
+  # permissions/privs set for the account we create
+  if ($< == 0) {
+    unless (chmod(0755, $home_dir, $test_dir)) {
+      die("Can't set perms on $home_dir to 0755: $!");
+    }
+
+    unless (chown($uid, $gid, $home_dir, $test_dir)) {
+      die("Can't set owner of $home_dir to $uid/$gid: $!");
+    }
+  }
+
+  auth_user_write($auth_user_file, $user, $passwd, $uid, $gid, $home_dir,
+    '/bin/bash');
+  auth_group_write($auth_group_file, $group, $gid, $user);
+
+  my $config = {
+    PidFile => $pid_file,
+    ScoreboardFile => $scoreboard_file,
+    SystemLog => $log_file,
+    TraceLog => $log_file,
+    Trace => 'fsio:20 vroot:20',
+
+    AuthUserFile => $auth_user_file,
+    AuthGroupFile => $auth_group_file,
+    ShowSymlinks => 'off',
+
+    IfModules => {
+      'mod_vroot.c' => [
+        'VRootEngine on',
+        "VRootLog $log_file",
+        'DefaultRoot ~',
+        "VRootAlias /tmp ~/tmp-vroot-alias",
+        "VRootAlias $test_dir ~/0001a-input",
+      ],
+
+      'mod_delay.c' => {
+        DelayEngine => 'off',
+      },
+    },
+  };
+
+  my ($port, $config_user, $config_group) = config_write($config_file, $config);
+
+  # Open pipes, for use between the parent and child processes.  Specifically,
+  # the child will indicate when it's done with its test by writing a message
+  # to the parent.
+  my ($rfh, $wfh);
+  unless (pipe($rfh, $wfh)) {
+    die("Can't open pipe: $!");
+  }
+
+  my $ex;
+
+  # Fork child
+  $self->handle_sigchld();
+  defined(my $pid = fork()) or die("Can't fork: $!");
+  if ($pid) {
+    eval {
+      my $client = ProFTPD::TestSuite::FTP->new('127.0.0.1', $port);
+      $client->login($user, $passwd);
+
+      my ($resp_code, $resp_msg) = $client->pwd();
+
+      my $expected;
+
+      $expected = 257;
+      $self->assert($expected == $resp_code,
+        test_msg("Expected $expected, got $resp_code"));
+
+      $expected = "\"/\" is the current directory";
+      $self->assert($expected eq $resp_msg,
+        test_msg("Expected '$expected', got '$resp_msg'"));
+
+      my $conn = $client->mlsd_raw('0001a-input');
+      unless ($conn) {
+        die("Failed to MLSD: " . $client->response_code() . " " .
+          $client->response_msg());
+      }
+
+      my $buf;
+      $conn->read($buf, 8192, 30);
+      eval { $conn->close() };
+
+      # We have to be careful of the fact that readdir returns directory
+      # entries in an unordered fashion.
+      my $res = {};
+      my $lines = [split(/\n/, $buf)];
+      foreach my $line (@$lines) {
+        if ($line =~ /^modify=\S+;perm=\S+;type=\S+;unique=\S+;UNIX\.group=\d+;UNIX\.mode=\d+;UNIX.owner=\d+; (.*?)$/) {
+          $res->{$1} = 1;
+        }
+      }
+
+      unless (scalar(keys(%$res)) > 0) {
+        die("MLSD data unexpectedly empty");
+      }
+
+      $expected = {
+        '.' => 1,
+        '..' => 1,
+        'asgard' => 1,
+      };
+
+      my $ok = 1;
+      my $mismatch;
+      foreach my $name (keys(%$res)) {
+        unless (defined($expected->{$name})) {
+          $mismatch = $name;
+          $ok = 0;
+          last;
+        }
+      }
+
+      unless ($ok) {
+        die("Unexpected name '$mismatch' appeared in MLSD data")
+      }
+
+      $client->quit();
+    };
+
+    if ($@) {
+      $ex = $@;
+    }
+
+    $wfh->print("done\n");
+    $wfh->flush();
+
+  } else {
+    eval { server_wait($config_file, $rfh) };
+    if ($@) { warn($@);
+      exit 1;
+    }
+
+    exit 0;
+  }
+
+  # Stop server
+  server_stop($pid_file);
+
+  $self->assert_child_ok($pid);
+
+  if ($ex) {
+    test_append_logfile($log_file, $ex);
+    unlink($log_file);
+
     die($ex);
   }
 

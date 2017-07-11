@@ -2,11 +2,9 @@ Source: proftpd-mod-vroot
 Section: net
 Priority: optional
 Maintainer: ProFTPD Maintainance Team <pkg-proftpd-maintainers@lists.alioth.debian.org>
-Uploaders: Fabrizio Regalli <fabreg@fabreg.it>,
-    Francesco Paolo Lovergine <frankie@debian.org>
-DM-Upload-Allowed: yes
-Build-Depends: debhelper (>= 7.0.50~), proftpd-dev (>= 1.3.3d-5~), libacl1-dev
-Standards-Version: 3.9.2
+Uploaders: Fabrizio Regalli <fabreg@fabreg.it>, Francesco Paolo Lovergine <frankie@debian.org>
+Build-Depends: debhelper (>= 9), proftpd-dev (>= 1.3.3d-5~), libacl1-dev
+Standards-Version: 3.9.8
 Homepage: http://www.castaglia.org/proftpd/modules/mod_vroot.html
 Vcs-Git: git://git.debian.org/pkg-proftpd/proftpd-mod-vroot.git
 Vcs-Browser: http://git.debian.org/?p=pkg-proftpd/proftpd-mod-vroot.git;a=summary
