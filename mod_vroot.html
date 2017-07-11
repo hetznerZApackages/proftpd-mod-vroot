@@ -26,7 +26,7 @@ provides this capability by using ProFTPD's FS API, available as of 1.2.8rc1.
 <p>
 The most current version of <code>mod_vroot</code> can be found at:
 <pre>
-  <a href="http://www.castaglia.org/proftpd/">http://www.castaglia.org/proftpd/</a>
+  <a href="https://github.com/Castaglia/proftpd-mod_vroot.git">https://github.com/Castaglia/proftpd-mod_vroot.git</a>
 </pre>
 
 <h2>Author</h2>
@@ -77,6 +77,12 @@ directory using:
 </pre>
 This will automatically create an "upload" directory to appear in the
 chroot area (in this case, the user's home directory).
+
+<p>
+The <code>VRootAlias</code> directive is only needed for files/directories
+that are going to be accessed by remote clients.  It is <b>not</b> needed
+for configuration files (<i>e.g.</i> PAM configuration files like <code>pam_env.conf</code>) needed by libraries.  Using the <code>VRootAlias</code> for
+such library configuration files is pointless and wasteful.
 
 <p>
 Note that this directive will <b>not</b> work if the
@@ -190,8 +196,23 @@ the <code>mod_vroot.c</code> file into:
 Then follow the normal steps for using third-party modules in proftpd:
 <pre>
   ./configure --with-modules=mod_vroot
+</pre>
+To build <code>mod_vroot</code> as a DSO module:
+<pre>
+  ./configure --enable-dso --with-shared=mod_vroot
+</pre>
+Then follow the usual steps:
+<pre>
   make
   make install
+</pre>
+
+<p>
+For those with an existing ProFTPD installation, you can use the
+<code>prxs</code> tool to add <code>mod_vroot</code>, as a DSO module, to
+your existing server:
+<pre>
+  # prxs -c -i -d mod_vroot.c
 </pre>
 
 <p>
@@ -201,7 +222,7 @@ Last Updated: <i>$Date: 2009/10/19 16:30:18 $</i><br>
 <hr>
 
 <font size=2><b><i>
-&copy; Copyright 2000-2009 TJ Saunders<br>
+&copy; Copyright 2000-2013 TJ Saunders<br>
  All Rights Reserved<br>
 </i></b></font>
 

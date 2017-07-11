@@ -2,7 +2,7 @@
  * ProFTPD: mod_vroot -- a module implementing a virtual chroot capability
  *                       via the FSIO API
  *
- * Copyright (c) 2002-2011 TJ Saunders
+ * Copyright (c) 2002-2014 TJ Saunders
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,11 @@
 #include "conf.h"
 #include "privs.h"
 
-#define MOD_VROOT_VERSION 	"mod_vroot/0.9.2"
+#define MOD_VROOT_VERSION 	"mod_vroot/0.9.4"
 
 /* Make sure the version of proftpd is as necessary. */
-#if PROFTPD_VERSION_NUMBER < 0x0001030201
-# error "ProFTPD 1.3.2rc1 or later required"
+#if PROFTPD_VERSION_NUMBER < 0x0001030406
+# error "ProFTPD 1.3.4b or later required"
 #endif
 
 static const char *vroot_log = NULL;
@@ -53,8 +53,15 @@ static pr_table_t *vroot_aliastab = NULL;
 static pool *vroot_dir_pool = NULL;
 static pr_table_t *vroot_dirtab = NULL;
 
+#if PROFTPD_VERSION_NUMBER >= 0x0001030407
+static int vroot_use_mkdtemp = FALSE;
+#endif /* ProFTPD 1.3.4c or later */
+
 static unsigned int vroot_opts = 0;
 #define	VROOT_OPT_ALLOW_SYMLINKS	0x0001
+
+/* vroot_realpath() flags */
+#define VROOT_REALPATH_FL_ABS_PATH	0x001
 
 /* vroot_lookup_path() flags */
 #define VROOT_LOOKUP_FL_NO_ALIASES	0x0001
@@ -68,8 +75,10 @@ static int vroot_is_alias(const char *);
  */
 
 static void strmove(register char *dst, register const char *src) {
-  if (!dst || !src)
+  if (dst == NULL ||
+      src == NULL) {
     return;
+  }
 
   while (*src != 0) {
     *dst++ = *src++;
@@ -79,25 +88,31 @@ static void strmove(register char *dst, register const char *src) {
 }
 
 static void vroot_clean_path(char *path) {
-  char *p;
+  char *p = NULL;
 
-  if (path == NULL || *path == 0)
+  if (path == NULL ||
+      *path == 0) {
       return;
+  }
 
-  while ((p = strstr(path, "//")) != NULL)
+  while ((p = strstr(path, "//")) != NULL) {
     strmove(p, p + 1);
+  }
 
-  while ((p = strstr(path, "/./")) != NULL)
+  while ((p = strstr(path, "/./")) != NULL) {
     strmove(p, p + 2);
+  }
 
-  while (strncmp(path, "../", 3) == 0)
+  while (strncmp(path, "../", 3) == 0) {
     path += 3;
+  }
 
   p = strstr(path, "/../");
   if (p != NULL) {
     if (p == path) {
-      while (strncmp(path, "/../", 4) == 0)
+      while (strncmp(path, "/../", 4) == 0) {
         strmove(path, path + 3);
+      }
 
       p = strstr(path, "/../");
     }
@@ -105,14 +120,19 @@ static void vroot_clean_path(char *path) {
     while (p != NULL) {
       char *next_elem = p + 4;
 
-      if (p != path && *p == '/') 
+      if (p != path &&
+          *p == '/') {
         p--;
+      }
 
-      while (p != path && *p != '/')
+      while (p != path &&
+             *p != '/') {
         p--;
+      }
 
-      if (*p == '/')
+      if (*p == '/') {
         p++;
+      }
 
       strmove(p, next_elem);
       p = strstr(path, "/../");
@@ -124,36 +144,45 @@ static void vroot_clean_path(char *path) {
   if (*p == '.') {
     p++;
 
-    if (*p == '\0')
+    if (*p == '\0') {
       return;
+    }
 
     if (*p == '/') {
-      while (*p == '/') 
+      while (*p == '/') {
         p++;
+      }
 
       strmove(path, p);
     }
   }
 
-  if (*p == '\0')
+  if (*p == '\0') {
     return;
+  }
 
   p = path + strlen(path) - 1;
-  if (*p != '.' || p == path)
+  if (*p != '.' ||
+      p == path) {
     return;
+  }
 
   p--;
-  if (*p == '/' || p == path) {
+  if (*p == '/' ||
+      p == path) {
     p[1] = '\0';
     return;
   }
 
-  if (*p != '.' || p == path)
+  if (*p != '.' ||
+      p == path) {
     return;
+  }
 
   p--;
-  if (*p != '/')
+  if (*p != '/') {
     return;
+  }
 
   *p = '\0';
   p = strrchr(path, '/');
@@ -164,6 +193,38 @@ static void vroot_clean_path(char *path) {
   }
 
   p[1] = '\0';
+}
+
+static char *vroot_realpath(pool *p, const char *path, int flags) {
+  char *real_path = NULL;
+  size_t real_pathlen;
+
+  if (flags & VROOT_REALPATH_FL_ABS_PATH) {
+    /* If not an absolute path, prepend the current location. */
+    if (*path != '/') {
+      real_path = pdircat(p, pr_fs_getvwd(), path, NULL);
+
+    } else {
+      real_path = pstrdup(p, path);
+    }
+
+  } else {
+    real_path = pstrdup(p, path);
+  }
+
+  vroot_clean_path(real_path);
+
+  /* If the given path ends in a slash, remove it.  The handling of
+   * VRootAliases is sensitive to such things.
+   */
+  real_pathlen = strlen(real_path);
+  if (real_pathlen > 1 &&
+      real_path[real_pathlen-1] == '/') {
+    real_path[real_pathlen-1] = '\0';
+    real_pathlen--;
+  }
+
+  return real_path;
 }
 
 static int vroot_lookup_path(pool *p, char *path, size_t pathlen,
@@ -219,13 +280,12 @@ loop:
 
   } else if (*bufp == '/') {
     snprintf(path, pathlen, "%s/", vroot_base);
-
     bufp += 1;
     goto loop;
 
   } else if (*bufp != '\0') {
     size_t buflen, tmplen;
-    char *ptr;
+    char *ptr = NULL;
 
     ptr = strstr(bufp, "..");
     if (ptr != NULL) {
@@ -280,9 +340,14 @@ loop:
     if (vroot_aliastab != NULL) {
       char *start_ptr = NULL, *end_ptr = NULL, *src_path = NULL;
 
+      /* buf is used here for storing the "suffix", to be appended later when
+       * aliases are found.
+       */
+      bufp = buf;
       start_ptr = path;
+
       while (start_ptr != NULL) {
-        char *ptr;
+        char *ptr = NULL;
 
         pr_signals_handle();
 
@@ -312,8 +377,8 @@ loop:
           sstrncpy(path, src_path, pathlen);
 
           if (end_ptr != NULL) {
-            sstrcat(path, "/", pathlen);
-            sstrcat(path, end_ptr + 1, pathlen);
+            /* Now tack on our suffix from the scratchpad. */
+            sstrcat(path, bufp, pathlen);
           }
 
           break;
@@ -334,6 +399,8 @@ loop:
           break;
         }
 
+        /* Store the suffix in the buf scratchpad. */
+        sstrncpy(buf, ptr, sizeof(buf));
         end_ptr = ptr;
         *end_ptr = '\0';
       }
@@ -354,7 +421,7 @@ static int vroot_is_alias(const char *path) {
 
 static int handle_vroot_alias(void) {
   config_rec *c;
-  pool *tmp_pool;
+  pool *tmp_pool = NULL;
 
   /* Handle any VRootAlias settings. */
 
@@ -362,8 +429,7 @@ static int handle_vroot_alias(void) {
 
   c = find_config(main_server->conf, CONF_PARAM, "VRootAlias", FALSE);
   while (c) {
-    char src_path[PR_TUNABLE_PATH_MAX+1], dst_path[PR_TUNABLE_PATH_MAX+1],
-      vpath[PR_TUNABLE_PATH_MAX+1], *ptr;
+    char src_path[PR_TUNABLE_PATH_MAX+1], dst_path[PR_TUNABLE_PATH_MAX+1], *ptr;
 
     pr_signals_handle();
 
@@ -373,27 +439,22 @@ static int handle_vroot_alias(void) {
      */
 
     memset(src_path, '\0', sizeof(src_path));
-    sstrncpy(src_path, c->argv[0], sizeof(src_path)-1);
+    ptr = c->argv[0];
+
+    /* Check for any expandable variables. */
+    ptr = path_subst_uservar(tmp_pool, &ptr);
+
+    sstrncpy(src_path, ptr, sizeof(src_path)-1);
     vroot_clean_path(src_path);
 
-    ptr = dir_best_path(tmp_pool, c->argv[1]);
+    ptr = c->argv[1];
+
+    /* Check for any expandable variables. */
+    ptr = path_subst_uservar(tmp_pool, &ptr);
+
+    ptr = dir_best_path(tmp_pool, ptr);
     vroot_lookup_path(NULL, dst_path, sizeof(dst_path)-1, ptr,
       VROOT_LOOKUP_FL_NO_ALIASES, NULL);
-
-    /* If the vroot of the source path matches the vroot of the destination
-     * path, then we have a badly configured VRootAlias, one which is trying
-     * to override itself.  Need to check for, and reject, such cases.
-     */
-    vroot_lookup_path(NULL, vpath, sizeof(vpath)-1, src_path,
-      VROOT_LOOKUP_FL_NO_ALIASES, NULL);
-    if (strcmp(dst_path, vpath) == 0) {
-      (void) pr_log_writefile(vroot_logfd, MOD_VROOT_VERSION,
-        "alias '%s' maps to its real path '%s' inside the vroot, "
-        "ignoring bad alias", dst_path, src_path);
-
-      c = find_config_next(c, c->next, CONF_PARAM, "VRootAlias", FALSE);
-      continue;
-    }
 
     if (vroot_alias_pool == NULL) {
       vroot_alias_pool = make_sub_pool(session.pool);
@@ -431,10 +492,9 @@ static int handle_vroot_alias(void) {
 /* FS callbacks
  */
 
-static int vroot_stat(pr_fs_t *fs, const char *orig_path, struct stat *st) {
+static int vroot_stat(pr_fs_t *fs, const char *stat_path, struct stat *st) {
   int res;
-  char vpath[PR_TUNABLE_PATH_MAX + 1], *path;
-  size_t path_len = 0;
+  char vpath[PR_TUNABLE_PATH_MAX + 1], *path = NULL;
   pool *tmp_pool = NULL;
 
   if (session.curr_phase == LOG_CMD ||
@@ -444,23 +504,11 @@ static int vroot_stat(pr_fs_t *fs, const char *orig_path, struct stat *st) {
     /* NOTE: once stackable FS modules are supported, have this fall through
      * to the next module in the stack.
      */
-    return stat(orig_path, st);
+    return stat(stat_path, st);
   }
 
   tmp_pool = make_sub_pool(session.pool);
-
-  path = pstrdup(tmp_pool, orig_path);
-  vroot_clean_path(path);
-
-  /* If the given path ends in a slash, remove it.  The handling of
-   * VRootAliases is sensitive to such things.
-   */
-  path_len = strlen(path);
-  if (path_len > 1 &&
-      path[path_len-1] == '/') {
-    path[path_len-1] = '\0';
-    path_len--;
-  }
+  path = vroot_realpath(tmp_pool, stat_path, 0);
 
   if (vroot_lookup_path(NULL, vpath, sizeof(vpath)-1, path, 0, NULL) < 0) {
     destroy_pool(tmp_pool);
@@ -474,8 +522,8 @@ static int vroot_stat(pr_fs_t *fs, const char *orig_path, struct stat *st) {
 
 static int vroot_lstat(pr_fs_t *fs, const char *orig_path, struct stat *st) {
   int res;
-  char vpath[PR_TUNABLE_PATH_MAX + 1], *path;
-  size_t path_len = 0;
+  char vpath[PR_TUNABLE_PATH_MAX + 1], *path = NULL;
+  size_t pathlen = 0;
   pool *tmp_pool = NULL;
 
   if (session.curr_phase == LOG_CMD ||
@@ -496,11 +544,11 @@ static int vroot_lstat(pr_fs_t *fs, const char *orig_path, struct stat *st) {
   /* If the given path ends in a slash, remove it.  The handling of
    * VRootAliases is sensitive to such things.
    */
-  path_len = strlen(path);
-  if (path_len > 1 &&
-      path[path_len-1] == '/') {
-    path[path_len-1] = '\0';
-    path_len--;
+  pathlen = strlen(path);
+  if (pathlen > 1 &&
+      path[pathlen-1] == '/') {
+    path[pathlen-1] = '\0';
+    pathlen--;
   }
 
   if (vroot_lookup_path(NULL, vpath, sizeof(vpath)-1, path, 0, NULL) < 0) {
@@ -557,10 +605,7 @@ static int vroot_unlink(pr_fs_t *fs, const char *path) {
   int res;
   char vpath[PR_TUNABLE_PATH_MAX + 1];
 
-  if (session.curr_phase == LOG_CMD ||
-      session.curr_phase == LOG_CMD_ERR ||
-      (session.sf_flags & SF_ABORT) ||
-      *vroot_base == '\0') {
+  if (vroot_base[0] == '\0') {
     /* NOTE: once stackable FS modules are supported, have this fall through
      * to the next module in the stack.
      */
@@ -689,10 +734,11 @@ static int vroot_symlink(pr_fs_t *fs, const char *path1, const char *path2) {
   return res;
 }
 
-static int vroot_readlink(pr_fs_t *fs, const char *path, char *buf,
+static int vroot_readlink(pr_fs_t *fs, const char *readlink_path, char *buf,
     size_t max) {
   int res;
-  char vpath[PR_TUNABLE_PATH_MAX + 1];
+  char vpath[PR_TUNABLE_PATH_MAX + 1], *path = NULL, *alias_path = NULL;
+  pool *tmp_pool = NULL;
 
   if (session.curr_phase == LOG_CMD ||
       session.curr_phase == LOG_CMD_ERR ||
@@ -701,13 +747,33 @@ static int vroot_readlink(pr_fs_t *fs, const char *path, char *buf,
     /* NOTE: once stackable FS modules are supported, have this fall through
      * to the next module in the stack.
      */
-    return readlink(path, buf, max);
+    return readlink(readlink_path, buf, max);
   }
 
-  if (vroot_lookup_path(NULL, vpath, sizeof(vpath)-1, path, 0, NULL) < 0)
+  /* In order to find any VRootAlias paths, we need to use the full path.
+   * However, if we do NOT find any VRootAlias, then we do NOT want to use
+   * the full path.
+   */
+
+  tmp_pool = make_sub_pool(session.pool);
+  path = vroot_realpath(tmp_pool, readlink_path, VROOT_REALPATH_FL_ABS_PATH);
+
+  if (vroot_lookup_path(tmp_pool, vpath, sizeof(vpath)-1, path, 0,
+      &alias_path) < 0) {
+    destroy_pool(tmp_pool);
     return -1;
+  }
+
+  if (alias_path == NULL) {
+    if (vroot_lookup_path(NULL, vpath, sizeof(vpath)-1, readlink_path, 0,
+        NULL) < 0) {
+      destroy_pool(tmp_pool);
+      return -1;
+    }
+  }
 
   res = readlink(vpath, buf, max);
+  destroy_pool(tmp_pool);
   return res;
 }
 
@@ -776,6 +842,30 @@ static int vroot_chown(pr_fs_t *fs, const char *path, uid_t uid, gid_t gid) {
   res = chown(vpath, uid, gid);
   return res;
 }
+
+#if PROFTPD_VERSION_NUMBER >= 0x0001030407
+static int vroot_lchown(pr_fs_t *fs, const char *path, uid_t uid, gid_t gid) {
+  int res;
+  char vpath[PR_TUNABLE_PATH_MAX + 1];
+
+  if (session.curr_phase == LOG_CMD ||
+      session.curr_phase == LOG_CMD_ERR ||
+      (session.sf_flags & SF_ABORT) ||
+      *vroot_base == '\0') {
+    /* NOTE: once stackable FS modules are supported, have this fall through
+     * to the next module in the stack.
+     */
+    res = lchown(path, uid, gid);
+    return res;
+  }
+
+  if (vroot_lookup_path(NULL, vpath, sizeof(vpath)-1, path, 0, NULL) < 0)
+    return -1;
+
+  res = lchown(vpath, uid, gid);
+  return res;
+}
+#endif /* ProFTPD 1.3.4c or later */
 
 static int vroot_chroot(pr_fs_t *fs, const char *path) {
   char *chroot_path = "/", *tmp = NULL;
@@ -931,14 +1021,58 @@ static int vroot_chdir(pr_fs_t *fs, const char *path) {
   return 0;
 }
 
-static struct dirent vroot_dent;
+static int vroot_utimes(pr_fs_t *fs, const char *utimes_path,
+    struct timeval *tvs) {
+  int res;
+  char vpath[PR_TUNABLE_PATH_MAX + 1], *path = NULL;
+  pool *tmp_pool = NULL;
+
+  if (session.curr_phase == LOG_CMD ||
+      session.curr_phase == LOG_CMD_ERR ||
+      (session.sf_flags & SF_ABORT) ||
+      *vroot_base == '\0') {
+    /* NOTE: once stackable FS modules are supported, have this fall through
+     * to the next module in the stack.
+     */
+    res = utimes(utimes_path, tvs);
+    return res;
+  }
+
+  tmp_pool = make_sub_pool(session.pool);
+  path = vroot_realpath(tmp_pool, utimes_path, VROOT_REALPATH_FL_ABS_PATH);
+  
+  if (vroot_lookup_path(NULL, vpath, sizeof(vpath)-1, path, 0, NULL) < 0) {
+    destroy_pool(tmp_pool);
+    return -1;
+  }
+
+  res = utimes(vpath, tvs);
+  destroy_pool(tmp_pool);
+  return res;
+}
+
+static struct dirent *vroot_dent = NULL;
+static size_t vroot_dentsz = 0;
+
+/* On most systems, dirent.d_name is an array into which we can copy the
+ * name we want.
+ *
+ * However, on other systems (e.g. Solaris 2), dirent.d_name is an array size
+ * of 1.  This approach makes use of the fact that the d_name member is the
+ * last member of the struct, meaning that the actual size is variable.
+ *
+ * We need to Do The Right Thing(tm) in either case.
+ */
+static size_t vroot_dent_namesz = 0;
+
 static array_header *vroot_dir_aliases = NULL;
 static int vroot_dir_idx = -1;
 
 static int vroot_alias_dirscan(const void *key_data, size_t key_datasz,
     void *value_data, size_t value_datasz, void *user_data) {
-  const char *alias_path, *dir_path, *real_path;
-  char *ptr;
+  const char *alias_path = NULL, *dir_path = NULL, *real_path = NULL;
+  char *ptr = NULL;
+  size_t dir_pathlen;
 
   alias_path = key_data;
   real_path = value_data;
@@ -959,15 +1093,12 @@ static int vroot_alias_dirscan(const void *key_data, size_t key_datasz,
     return 0;
   }
 
-  /* If the length from the start of the alias path to the last occurring
-   * slash is longer than the length of the directory path, then this
-   * alias obviously does not occur in this directory.
-   */
-  if ((ptr - alias_path) > strlen(dir_path)) {
-    return 0;
-  }
+  dir_pathlen = strlen(dir_path);
 
-  if (strncmp(dir_path, alias_path, (ptr - alias_path)) == 0) {
+  if (strncmp(dir_path, alias_path, dir_pathlen) == 0) {
+    pr_trace_msg(trace_channel, 17,
+      "adding VRootAlias '%s' to list of aliases contained in '%s'",
+      alias_path, dir_path);
     *((char **) push_array(vroot_dir_aliases)) = pstrdup(vroot_dir_pool,
       ptr + 1);
   }
@@ -977,7 +1108,7 @@ static int vroot_alias_dirscan(const void *key_data, size_t key_datasz,
 
 static int vroot_dirtab_keycmp_cb(const void *key1, size_t keysz1,
     const void *key2, size_t keysz2) {
-  unsigned int k1, k2;
+  unsigned long k1, k2;
 
   memcpy(&k1, key1, sizeof(k1));
   memcpy(&k2, key2, sizeof(k2));
@@ -986,7 +1117,7 @@ static int vroot_dirtab_keycmp_cb(const void *key1, size_t keysz1,
 }
 
 static unsigned int vroot_dirtab_hash_cb(const void *key, size_t keysz) {
-  unsigned int h;
+  unsigned long h;
 
   memcpy(&h, key, sizeof(h));
   return h;
@@ -994,10 +1125,10 @@ static unsigned int vroot_dirtab_hash_cb(const void *key, size_t keysz) {
 
 static void *vroot_opendir(pr_fs_t *fs, const char *orig_path) {
   int res;
-  char vpath[PR_TUNABLE_PATH_MAX + 1], *path;
-  void *dirh;
+  char vpath[PR_TUNABLE_PATH_MAX + 1], *path = NULL;
+  void *dirh = NULL;
   struct stat st;
-  size_t path_len = 0;
+  size_t pathlen = 0;
   pool *tmp_pool = NULL;
 
   if (session.curr_phase == LOG_CMD ||
@@ -1022,11 +1153,11 @@ static void *vroot_opendir(pr_fs_t *fs, const char *orig_path) {
   /* If the given path ends in a slash, remove it.  The handling of
    * VRootAliases is sensitive to such things.
    */
-  path_len = strlen(path);
-  if (path_len > 1 &&
-      path[path_len-1] == '/') {
-    path[path_len-1] = '\0';
-    path_len--;
+  pathlen = strlen(path);
+  if (pathlen > 1 &&
+      path[pathlen-1] == '/') {
+    path[pathlen-1] = '\0';
+    pathlen--;
   }
 
   if (vroot_lookup_path(NULL, vpath, sizeof(vpath)-1, path, 0, NULL) < 0) {
@@ -1067,7 +1198,7 @@ static void *vroot_opendir(pr_fs_t *fs, const char *orig_path) {
   }
 
   if (vroot_aliastab != NULL) {
-    unsigned int *cache_dirh;
+    unsigned long *cache_dirh = NULL;
 
     if (vroot_dirtab == NULL) {
       vroot_dir_pool = make_sub_pool(session.pool);
@@ -1085,10 +1216,10 @@ static void *vroot_opendir(pr_fs_t *fs, const char *orig_path) {
         vroot_dirtab_keycmp_cb);
     }
 
-    cache_dirh = palloc(vroot_dir_pool, sizeof(unsigned int));
-    *cache_dirh = (unsigned int) dirh;
+    cache_dirh = palloc(vroot_dir_pool, sizeof(unsigned long));
+    *cache_dirh = (unsigned long) dirh;
 
-    if (pr_table_kadd(vroot_dirtab, cache_dirh, sizeof(unsigned int),
+    if (pr_table_kadd(vroot_dirtab, cache_dirh, sizeof(unsigned long),
         pstrdup(vroot_dir_pool, vpath), strlen(vpath) + 1) < 0) {
       (void) pr_log_writefile(vroot_logfd, MOD_VROOT_VERSION,
         "error stashing path '%s' (key %p) in directory table: %s", vpath,
@@ -1127,7 +1258,7 @@ static void *vroot_opendir(pr_fs_t *fs, const char *orig_path) {
 }
 
 static struct dirent *vroot_readdir(pr_fs_t *fs, void *dirh) {
-  struct dirent *dent;
+  struct dirent *dent = NULL;
 
 next_dent:
   dent = readdir((DIR *) dirh);
@@ -1165,11 +1296,18 @@ next_dent:
         return NULL;
       }
 
-      memset(&vroot_dent, 0, sizeof(vroot_dent));
-      sstrncpy(vroot_dent.d_name, elts[vroot_dir_idx++],
-        sizeof(vroot_dent.d_name));
+      memset(vroot_dent, 0, vroot_dentsz);
 
-      return &vroot_dent;
+      if (vroot_dent_namesz == 0) {
+        sstrncpy(vroot_dent->d_name, elts[vroot_dir_idx++],
+          sizeof(vroot_dent->d_name));
+
+      } else {
+        sstrncpy(vroot_dent->d_name, elts[vroot_dir_idx++],
+          vroot_dent_namesz);
+      }
+
+      return vroot_dent;
     }
   }
 
@@ -1182,11 +1320,11 @@ static int vroot_closedir(pr_fs_t *fs, void *dirh) {
   res = closedir((DIR *) dirh);
 
   if (vroot_dirtab != NULL) {
-    unsigned int lookup_dirh;
+    unsigned long lookup_dirh;
     int count;
 
-    lookup_dirh = (unsigned int) dirh;
-    (void) pr_table_kremove(vroot_dirtab, &lookup_dirh, sizeof(unsigned int),
+    lookup_dirh = (unsigned long) dirh;
+    (void) pr_table_kremove(vroot_dirtab, &lookup_dirh, sizeof(unsigned long),
       NULL);
 
     /* If the dirtab table is empty, destroy the table. */
@@ -1390,6 +1528,90 @@ MODRET set_vrootserverroot(cmd_rec *cmd) {
 /* Command handlers
  */
 
+MODRET vroot_log_retr(cmd_rec *cmd) {
+  const char *key;
+  char *path;
+
+  if (vroot_engine == FALSE ||
+      session.chroot_path == NULL) {
+    return PR_DECLINED(cmd);
+  }
+
+  key = "mod_xfer.retr-path";
+
+  path = pr_table_get(cmd->notes, key, NULL);
+  if (path != NULL) {
+    char *real_path;
+
+    if (*path == '/') {
+      real_path = pdircat(cmd->pool, vroot_base, path, NULL);
+      vroot_clean_path(real_path);
+
+    } else {
+      real_path = vroot_realpath(cmd->pool, path, VROOT_REALPATH_FL_ABS_PATH);
+    }
+
+    pr_table_set(cmd->notes, key, real_path, 0);
+  }
+
+  return PR_DECLINED(cmd);
+}
+
+MODRET vroot_log_stor(cmd_rec *cmd) {
+  const char *key;
+  char *path;
+
+  if (vroot_engine == FALSE ||
+      session.chroot_path == NULL) {
+    return PR_DECLINED(cmd);
+  }
+
+  key = "mod_xfer.store-path";
+
+  path = pr_table_get(cmd->notes, key, NULL);
+  if (path != NULL) {
+    char *real_path;
+
+    if (*path == '/') {
+      real_path = pdircat(cmd->pool, vroot_base, path, NULL);
+      vroot_clean_path(real_path);
+
+    } else {
+      real_path = vroot_realpath(cmd->pool, path, VROOT_REALPATH_FL_ABS_PATH);
+    }
+
+    pr_table_set(cmd->notes, key, real_path, 0);
+  }
+
+  return PR_DECLINED(cmd);
+}
+
+MODRET vroot_pre_mkd(cmd_rec *cmd) {
+  if (vroot_engine == FALSE ||
+      session.chroot_path == NULL) {
+    return PR_DECLINED(cmd);
+  }
+
+#if PROFTPD_VERSION_NUMBER >= 0x0001030407
+  vroot_use_mkdtemp = pr_fsio_set_use_mkdtemp(FALSE);
+#endif /* ProFTPD 1.3.4c or later */
+
+  return PR_DECLINED(cmd);
+}
+
+MODRET vroot_post_mkd(cmd_rec *cmd) {
+  if (vroot_engine == FALSE ||
+      session.chroot_path == NULL) {
+    return PR_DECLINED(cmd);
+  }
+
+#if PROFTPD_VERSION_NUMBER >= 0x0001030407
+  pr_fsio_set_use_mkdtemp(vroot_use_mkdtemp);
+#endif /* ProFTPD 1.3.4c or later */
+
+  return PR_DECLINED(cmd);
+}
+
 MODRET vroot_pre_pass(cmd_rec *cmd) {
   pr_fs_t *fs = NULL;
   unsigned char *use_vroot = NULL;
@@ -1433,8 +1655,12 @@ MODRET vroot_pre_pass(cmd_rec *cmd) {
   fs->truncate = vroot_truncate;
   fs->chmod = vroot_chmod;
   fs->chown = vroot_chown;
+#if PROFTPD_VERSION_NUMBER >= 0x0001030407
+  fs->lchown = vroot_lchown;
+#endif /* ProFTPD 1.3.4c or later */
   fs->chdir = vroot_chdir;
   fs->chroot = vroot_chroot;
+  fs->utimes = vroot_utimes;
   fs->opendir = vroot_opendir;
   fs->readdir = vroot_readdir;
   fs->closedir = vroot_closedir;
@@ -1509,6 +1735,7 @@ MODRET vroot_post_pass_err(cmd_rec *cmd) {
 
 static int vroot_sess_init(void) {
   config_rec *c;
+  struct dirent dent;
 
   c = find_config(main_server->conf, CONF_PARAM, "VRootLog", FALSE);
   if (c) {
@@ -1545,6 +1772,18 @@ static int vroot_sess_init(void) {
     }
   }
 
+  /* Allocate the memory for the static struct dirent that we use, including
+   * determining the necessary sizes.
+   */
+  vroot_dentsz = sizeof(dent);
+  if (sizeof(dent.d_name) == 1) {
+    /* Allocate extra space for the dent path name. */
+    vroot_dent_namesz = PR_TUNABLE_PATH_MAX;
+  }
+
+  vroot_dentsz += vroot_dent_namesz;
+  vroot_dent = palloc(session.pool, vroot_dentsz);
+
   return 0;
 }
 
@@ -1564,6 +1803,34 @@ static cmdtable vroot_cmdtab[] = {
   { PRE_CMD,		C_PASS,	G_NONE,	vroot_pre_pass, FALSE, FALSE },
   { POST_CMD,		C_PASS,	G_NONE,	vroot_post_pass, FALSE, FALSE },
   { POST_CMD_ERR,	C_PASS,	G_NONE,	vroot_post_pass_err, FALSE, FALSE },
+
+  { PRE_CMD,		C_MKD,	G_NONE,	vroot_pre_mkd, FALSE, FALSE },
+  { POST_CMD,		C_MKD,	G_NONE,	vroot_post_mkd, FALSE, FALSE },
+  { POST_CMD_ERR,	C_MKD,	G_NONE,	vroot_post_mkd, FALSE, FALSE },
+  { PRE_CMD,		C_XMKD,	G_NONE,	vroot_pre_mkd, FALSE, FALSE },
+  { POST_CMD,		C_XMKD,	G_NONE,	vroot_post_mkd, FALSE, FALSE },
+  { POST_CMD_ERR,	C_XMKD,	G_NONE,	vroot_post_mkd, FALSE, FALSE },
+
+  /* These command handlers are for manipulating cmd->notes, to get
+   * paths properly logged.
+   *
+   * Ideally these would be LOG_CMD/LOG_CMD_ERR phase handlers.  HOWEVER,
+   * we need to transform things before the cmd is dispatched to mod_log,
+   * and mod_log uses a C_ANY handler for logging.  And when dispatching,
+   * C_ANY handlers are run before named handlers.  This means that using
+   * LOG_CMD/LOG_CMD_ERR handlers would be run AFTER mod_log's handler,
+   * even though we appear BEFORE mod_log in the module load order.
+   *
+   * Thus to do the transformation, we actually use POST_CMD/POST_CMD_ERR
+   * phase handlers here.
+   */
+  { POST_CMD,		C_APPE,	G_NONE, vroot_log_stor, FALSE, FALSE },
+  { POST_CMD_ERR,	C_APPE,	G_NONE, vroot_log_stor, FALSE, FALSE },
+  { POST_CMD,		C_RETR,	G_NONE, vroot_log_retr, FALSE, FALSE },
+  { POST_CMD_ERR,	C_RETR,	G_NONE, vroot_log_retr, FALSE, FALSE },
+  { POST_CMD,		C_STOR,	G_NONE, vroot_log_stor, FALSE, FALSE },
+  { POST_CMD_ERR,	C_STOR,	G_NONE, vroot_log_stor, FALSE, FALSE },
+
   { 0, NULL }
 };
 
