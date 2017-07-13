@@ -1,3 +1,9 @@
+proftpd-mod-vroot (0.9.4-1+hetz1) jessie-hetz; urgency=medium
+
+  * Released 0.9.4-1+hetz1~exp1 as 0.9.4-1+hetz1
+
+ -- Walter Kleynscheldt <walter.kleynscheldt@hetzner.co.za>  Thu, 13 Jul 2017 14:46:01 +0200
+
 proftpd-mod-vroot (0.9.4-1+hetz1~exp1) jessie-hetz-experimental; urgency=medium
 
   * Update to latest upstream release from stretch
