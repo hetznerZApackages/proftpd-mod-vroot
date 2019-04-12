@@ -1,3 +1,9 @@
+proftpd-mod-vroot (0.9.4-1+hetz2) jessie-hetz; urgency=medium
+
+  * Released 0.9.4-1+hetz2~exp2 as 0.9.4-1+hetz2
+
+ -- Willem Basson <willem.basson@hetzner.co.za>  Fri, 12 Apr 2019 11:51:43 +0200
+
 proftpd-mod-vroot (0.9.4-1+hetz2~exp2) jessie-hetz-experimental; urgency=medium
 
   * Rebuild to fix dpendency on proftpd-abi
