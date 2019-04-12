@@ -2,7 +2,7 @@ proftpd-mod-vroot (0.9.4-1+hetz2~exp2) jessie-hetz-experimental; urgency=medium
 
   * Rebuild to fix dpendency on proftpd-abi
 
- -- Willem Basson <willem.basson@hetzner.co.za>  Fri, 12 Apr 2019 10:37:00 +0200
+ -- Willem Basson <willem.basson@hetzner.co.za>  Fri, 12 Apr 2019 10:44:51 +0200
 
 proftpd-mod-vroot (0.9.4-1+hetz1) jessie-hetz; urgency=medium
 
