@@ -1,3 +1,9 @@
+proftpd-mod-vroot (0.9.4-1+hetz3~exp1) jessie-hetz-experimental; urgency=medium
+
+  * Change dependency to be >= 1.3.5 
+
+ -- Geoff Robertson <gr@hetzner.co.za>  Mon, 06 May 2019 15:04:24 +0200
+
 proftpd-mod-vroot (0.9.4-1+hetz2) jessie-hetz; urgency=medium
 
   * Released 0.9.4-1+hetz2~exp2 as 0.9.4-1+hetz2
