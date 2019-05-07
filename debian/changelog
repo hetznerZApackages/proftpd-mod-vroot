@@ -1,3 +1,9 @@
+proftpd-mod-vroot (0.9.4-2+hetz5~exp1) jessie-hetz-experimental; urgency=medium
+
+  * Version bump 
+
+ -- Geoff Robertson <gr@hetzner.co.za>  Tue, 07 May 2019 07:51:44 +0200
+
 proftpd-mod-vroot (0.9.4-2+hetz4) jessie-hetz; urgency=medium
 
   * Released 0.9.4-2+hetz4~exp2 as 0.9.4-2+hetz4
